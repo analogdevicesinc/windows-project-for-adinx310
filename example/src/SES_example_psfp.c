@@ -1,18 +1,19 @@
-/* 
- * Copyright 2024 Analog Devices, Inc.
- * 
+/*
+ * Copyright 2025 Analog Devices, Inc.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 #include <stdint.h>
 #include <string.h>
@@ -26,8 +27,8 @@
 #include "TSN_ieee802_dot1q_psfp.h"
 #include "SES_configuration.h"
 
-
-int32_t SES_streamFilterExample() {
+/* Apply stream filter to specific traffic */
+int32_t sesStreamFilter_Example(void) {
 
 	int rv;
 	int32_t index_p;
@@ -95,14 +96,15 @@ int32_t SES_streamFilterExample() {
 	/* gateID, no stream gate associated with this stream filter */
 	streamFilterInstanceTable.stream_gate_ref = 0xFF; 
 	
+	
 	rv = SES_PSFP_SetStreamFilterActive(mac, &streamFilterInstanceTable);
-	printf("SES_streamFilterExample :: %d\n", rv);
+	printf("sesStreamFilter_Example :: %d\n", rv);
 
 	return rv;
 }
 
-
-int32_t SES_streamGateExample() {
+/* Apply stream filter and stream gate to specific traffic */
+int32_t sesStreamGate_Example(void) {
 
 	int rv;
 	int32_t index_p;
@@ -226,12 +228,13 @@ int32_t SES_streamGateExample() {
 	streamGateInstanceTable.admin_control_list[1].interval_octet_max = 0;
 	rv = SES_PSFP_SetStreamFilterActive(mac, &streamFilterInstanceTable);
 	rv = SES_PSFP_SetStreamGateActive(mac, &streamGateInstanceTable);
-	printf("SES_streamGateExample :: %d\n", rv);
+	printf("sesStreamGate_Example :: %d\n", rv);
 
 	return rv;
 }
 
-int32_t SES_flowMeterExample() {
+/* Apply flow meter to allow a certain amount of traffic per unit time*/
+int32_t sesFlowMeter_Example(void) {
 
 	int rv;
 	int32_t index_p;
@@ -333,24 +336,25 @@ int32_t SES_flowMeterExample() {
 	rv = SES_PSFP_SetFlowMeterActive(mac, &flowMeterInstanceTable);
 	rv = SES_PSFP_SetStreamFilterActive(mac, &streamFilterInstanceTable);
 
-	printf("SES_flowMeterExample :: %d\n", rv);
+	printf("sesFlowMeter_Example :: %d\n", rv);
 
 	return rv;
 }
 
-
-void SES_readPsfpStatistics() {
-
+/* Read PSFP statistics */
+int32_t sesReadPsfpStatistics_Example(void) {
 	int rv;
 	SES_mac_t mac = SES_macPort2;
 	SES_psfpStatsFilterSdu_t destFilterSdu;
 	SES_psfpStatsGate_t destGate;
 	SES_psfpStatsFilterMatchMeter_t destFilterMatchMeter;
 	rv = SES_PSFP_GetStats(mac, &destFilterSdu, &destGate, &destFilterMatchMeter);
-	printf("SES_readPsfpStatistics :: %d\n", rv);
+	printf("sesReadPsfpStatistics_Example :: %d\n", rv);
+	return rv;
 }
 
-int32_t ses_ipv_reprioritize_example(void) {
+/* Reprioritize PCP of ingressing frames */
+int32_t sesIpvReprioritize_Example(void) {
 	int rv;
 	int32_t index_p;
 	TSN_ieee802_dot1q_psfp_stream_filter_instance_table_config_t streamFilterInstanceTable;
@@ -415,33 +419,33 @@ int32_t ses_ipv_reprioritize_example(void) {
 	return rv;
 }
 
-void SES_example_psfp_main(void) {
+void sesPsfp_Example(void) {
 
 	/* 
-	* 1: Stream Gate Example();
-	* 2: Stream Filter Example();
+	* 1: Stream Filter Example();
+	* 2: Stream Gate Example();
 	* 3: Flow Meter Example();
 	*/
 	
 	switch (PSFP) {
 
 	case 1:
-		printf("PSFP Stream Gate Example\n");
-		SES_streamGateExample();
+		printf("PSFP Stream Filter Example\n");
+		sesStreamFilter_Example();
 		break;
 	
 	case 2:
-		printf("PSFP Stream Filter Example\n");
-		SES_streamFilterExample();
+		printf("PSFP Stream Gate Example\n");
+		sesStreamGate_Example();
 		break;
 	
 	case 3:
 		printf("PSFP Flow Meter Example\n");
-		SES_flowMeterExample();
+		sesFlowMeter_Example();
 		break;
 
 	default:
-		printf("Wrong input, please check SES_configuration.h\n");
+		printf("ERROR: Wrong input, please check SES_configuration.h!!!\n");
 		break;
 
 	}

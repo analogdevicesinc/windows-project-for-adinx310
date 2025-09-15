@@ -1,19 +1,19 @@
-/* 
- * Copyright 2024 Analog Devices, Inc.
- * 
+/*
+ * Copyright 2025 Analog Devices, Inc.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -38,11 +38,12 @@
 #define SES_PORTMAP_PORT_5 32
 
 
-void null_stream_example(void) {
+
+void sesNullStream_Example(void) {
 
 	TSN_ieee802Dot1cbStream_t streamParameters;
 
-	uint8_t destinationMAC[6] = {0x11, 0x11, 0x11, 0x11, 0x11, 0x11};
+	uint8_t destinationMAC[6] = {0x00, 0x00, 0x00, 0x11, 0x11, 0x11};
 
 	/*Null stream identification*/
 	streamParameters.TSN_streamIdentity.identificationType = TSN_nullStream; 
@@ -64,9 +65,9 @@ void null_stream_example(void) {
 
 }
 
-void smac_vlan_example(void) {
+void sesSmacVlan_Example(void) {
 
-	uint8_t destinationMAC[6] = { 0x11, 0x11, 0x11, 0x11, 0x11, 0x11 };
+	uint8_t destinationMAC[6] = { 0x00, 0x00, 0x00, 0x22, 0x22, 0x22 };
 	TSN_ieee802Dot1cbStream_t streamParameters;
 
 	/*Source MAC and VLAN stream identification*/
@@ -94,11 +95,11 @@ void smac_vlan_example(void) {
 }
 
 
-void dmac_vlan_example(void) {
+void sesDmacVlan_Example(void) {
 
 	TSN_ieee802Dot1cbStream_t streamParameters;
-	uint8_t downDestinationMAC[6] = { 0x11, 0x33, 0x33, 0x33, 0x33, 0x33 };
-	uint8_t upDestinationMAC[6] = { 0x11, 0x44, 0x44, 0x44, 0x44, 0x44 };
+	uint8_t downDestinationMAC[6] = { 0x00, 0x00, 0x00, 0x33, 0x33, 0x33 };
+	uint8_t upDestinationMAC[6] = { 0x00, 0x00, 0x44, 0x44, 0x44, 0x44 };
 
 	/* Active Destination MAC and VLAN stream identification */
 	streamParameters.TSN_streamIdentity.identificationType = TSN_dmacVlan; 
@@ -129,10 +130,10 @@ void dmac_vlan_example(void) {
 }
 
 
-void ip_example(void) {
+void sesIp_Example(void) {
 
 	TSN_ieee802Dot1cbStream_t streamParameters;
-	uint8_t destinationMAC[6] = { 0x11, 0x11, 0x11, 0x11, 0x11, 0x11 };
+	uint8_t destinationMAC[6] = { 0x00, 0x11, 0x11, 0x11, 0x11, 0x11 };
 	int ipSource[4] = {192,168,1,3};
 	int ipDestination[4] = { 192,168,1,15 };
 
@@ -168,13 +169,13 @@ void ip_example(void) {
 }
 
 
-void mask_and_match_example(void) {
+void sesMaskAndMatch_Example(void) {
 
 	TSN_ieee802Dot1cbStream_t streamParameters;
 	TSN_ieee802Dot1cbMaskAndMatch_t maskAndMatchParameters;
 	uint8_t MaskMAC[6] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
-	uint8_t destinationMACMatch[6] = { 0x11, 0x11, 0x11, 0x11, 0x11, 0x11 };
-	uint8_t sourceMACMatch[6] = { 0x11, 0x22, 0x22, 0x22, 0x22, 0x22 };
+	uint8_t destinationMACMatch[6] = { 0x00, 0x66, 0x66, 0x66, 0x66, 0x66 };
+	uint8_t sourceMACMatch[6] = { 0x00, 0x77, 0x77, 0x77, 0x77, 0x77 };
 
 	/* Mask and match stream identification */
 	streamParameters.TSN_streamIdentity.identificationType = TSN_maskAndMatch; 
@@ -218,14 +219,19 @@ void mask_and_match_example(void) {
 	maskAndMatchParameters.msduMatch[3] = 0x00;
 }
 
-int32_t ses_frer_talker_example(void) {
+/* Enable Loop Protection (MSTP or Miss Return) before configuring Talker System */
+int32_t sesFrerTalker_Example(void) {
 	int32_t rv = 0;
 
-	uint8_t destinationMAC[6] = { 0x11, 0x11, 0x11, 0x11, 0x11, 0x11 };
+	uint8_t destinationMAC[6] = { 0x00, 0x00, 0x00, 0x11, 0x11, 0x11 };
 
 	TSN_ieee802Dot1cbFrer_t frerParameters;
 	TSN_ieee802Dot1cbStream_t streamParameters;
 	TSN_ieee802Dot1cbMaskAndMatch_t maskAndMatchParameters;
+
+	memset(&frerParameters, 0, sizeof(TSN_ieee802Dot1cbFrer_t));
+	memset(&streamParameters, 0, sizeof(TSN_ieee802Dot1cbStream_t));
+	memset(&maskAndMatchParameters, 0, sizeof(TSN_ieee802Dot1cbMaskAndMatch_t));
 
 	/* Stream table Parameters - Null Stream Identification */
 	streamParameters.TSN_streamIdentity.identificationType = TSN_nullStream;
@@ -246,10 +252,10 @@ int32_t ses_frer_talker_example(void) {
 	streamParameters.useStreamtable = false;
 	streamParameters.usedCnt = 0;
 
-
 	/* frer parameters */
 	frerParameters.TSN_sequenceGeneration.reset = false;
 	frerParameters.TSN_sequenceRecovery.individualRecovery = false;
+
 	/* Port where stream split is applied - Ingress traffic goes to this port */
 	frerParameters.TSN_streamSplit.port = SES_PORT_0;
 
@@ -258,31 +264,36 @@ int32_t ses_frer_talker_example(void) {
 	frerParameters.TSN_HardwareTableIndices.sequenceRecoveryTblIdx = -1;
 	frerParameters.TSN_HardwareTableIndices.txTransformTblIdx = -1;
 
-	/* Start MSTP stack*/
-	rv = SES_MstpStart();
-	if (rv < SES_PORT_OK) {
-		printf("SES_MstpStart :: %d\n", rv);
-	}
-
 	/* Configure VLAN mode */
 	rv = SES_SetVlanMode(100, 0xFFF);
 	if (rv < SES_PORT_OK) {
 		printf("SES_SetVlanMode :: %d\n", rv);
 	}
 
+	/* SES_MstpExcludeVlanFromSpanningTree:
+	 * This function is used to exclude the VLAN from spanning tree.
+	 * This is necessary to prevent the spanning tree from managing the VLAN
+	 * when using spanning tree for loop protection.
+	 */
+
 	rv = SES_FrerConfigureTalkerProxyForStream(&frerParameters, &streamParameters, &maskAndMatchParameters);
-	printf("ses_frer_talker_example :: %d\n\r", rv);
+	printf("sesFrerTalker_Example :: %d\n\r", rv);
 	return rv;
 }
 
-int32_t ses_frer_listener_example(void) {
+/* Enable Loop Protection (MSTP or Miss Return) before configuring Listener System */
+int32_t sesFrerListener_Example(void) {
 	int32_t rv = 0;
 
-	uint8_t destinationMAC[6] = { 0x11, 0x11, 0x11, 0x11, 0x11, 0x11 };
+	uint8_t destinationMAC[6] = { 0x00, 0x00, 0x00, 0x11, 0x11, 0x11 };
 	
 	TSN_ieee802Dot1cbFrer_t frerParameters;
 	TSN_ieee802Dot1cbStream_t streamParameters;
 	TSN_ieee802Dot1cbMaskAndMatch_t maskAndMatchParameters;
+
+	memset(&frerParameters, 0, sizeof(TSN_ieee802Dot1cbFrer_t));
+	memset(&streamParameters, 0, sizeof(TSN_ieee802Dot1cbStream_t));
+	memset(&maskAndMatchParameters, 0, sizeof(TSN_ieee802Dot1cbMaskAndMatch_t));
 
 	/* Stream table Parameters - Null Stream Identification */
 	streamParameters.TSN_streamIdentity.identificationType = TSN_nullStream;
@@ -303,7 +314,6 @@ int32_t ses_frer_listener_example(void) {
 	streamParameters.useStreamtable = false;
 
 	/* Configure frer */
-	frerParameters.TSN_sequenceRecovery.port = SES_PORTMAP_PORT_1 | SES_PORTMAP_PORT_2;
 	frerParameters.TSN_sequenceRecovery.algorithm = TSN_vector;
 	frerParameters.TSN_sequenceRecovery.historyLength = 5;
 	frerParameters.TSN_sequenceRecovery.resetTimeout = 0xffff;
@@ -315,31 +325,36 @@ int32_t ses_frer_listener_example(void) {
 	frerParameters.TSN_HardwareTableIndices.sequenceRecoveryTblIdx = -1;
 	frerParameters.TSN_HardwareTableIndices.txTransformTblIdx = -1;
 
-	/* Start MSTP stack*/
-	rv = SES_MstpStart();
-	if (rv < SES_PORT_OK) {
-		printf("SES_MstpStart :: %d\n", rv);
-	}
-
 	/* Configure VLAN mode */
 	rv = SES_SetVlanMode(100, 0xFFF);
 	if (rv < SES_PORT_OK) {
 		printf("SES_SetVlanMode :: %d\n", rv);
 	}
 
+	/* SES_MstpExcludeVlanFromSpanningTree:
+	 * This function is used to exclude the VLAN from spanning tree.
+	 * This is necessary to prevent the spanning tree from managing the VLAN
+	 * when using spanning tree for loop protection.
+	 */
+
 	rv = SES_FrerConfigureListenerProxyForStream(&frerParameters, &streamParameters, &maskAndMatchParameters);
-	printf("ses_frer_listener_example :: %d\n\r", rv);
+	printf("sesFrerListener_Example :: %d\n\r", rv);
 	return rv;
 }
 
-int32_t ses_frer_relay_example(void) {
+/* Enable Loop Protection (MSTP or Miss Return) before configuring Relay System */
+int32_t sesFrerRelay_Example(void) {
 	int32_t rv = 0;
 
-	uint8_t destinationMAC[6] = { 0x11, 0x11, 0x11, 0x11, 0x11, 0x11 };
+	uint8_t destinationMAC[6] = { 0x00, 0x00, 0x00, 0x11, 0x11, 0x11 };
 
 	TSN_ieee802Dot1cbFrer_t frerParameters;
 	TSN_ieee802Dot1cbStream_t streamParameters;
 	TSN_ieee802Dot1cbMaskAndMatch_t maskAndMatchParameters;
+
+	memset(&frerParameters, 0, sizeof(TSN_ieee802Dot1cbFrer_t));
+	memset(&streamParameters, 0, sizeof(TSN_ieee802Dot1cbStream_t));
+	memset(&maskAndMatchParameters, 0, sizeof(TSN_ieee802Dot1cbMaskAndMatch_t));
 
 	/* Stream table Parameters - Null Stream Identification */
 	streamParameters.TSN_streamIdentity.identificationType = TSN_nullStream;
@@ -361,7 +376,6 @@ int32_t ses_frer_relay_example(void) {
 	streamParameters.usedCnt = 0;
 
 	/* Configure frer */
-	frerParameters.TSN_sequenceRecovery.port = SES_PORTMAP_PORT_3 | SES_PORTMAP_PORT_4;
 	frerParameters.TSN_sequenceRecovery.algorithm = TSN_vector;
 	frerParameters.TSN_sequenceRecovery.historyLength = 5;
 	frerParameters.TSN_sequenceRecovery.resetTimeout = 0xffff;
@@ -378,20 +392,110 @@ int32_t ses_frer_relay_example(void) {
 	frerParameters.TSN_HardwareTableIndices.sequenceRecoveryTblIdx = -1;
 	frerParameters.TSN_HardwareTableIndices.txTransformTblIdx = -1;
 
+	/* Configure VLAN mode */
+	rv = SES_SetVlanMode(100, 0xFFF);
+	if (rv < SES_PORT_OK) {
+		printf("SES_SetVlanMode :: %d\n", rv);
+	}
+	/* SES_MstpExcludeVlanFromSpanningTree:
+	 * This function is used to exclude the VLAN from spanning tree.
+	 * This is necessary to prevent the spanning tree from managing the VLAN
+	 * when using spanning tree for loop protection.
+	 */
+
 	rv = SES_FrerConfigureRelaySystemForStream(&frerParameters, &streamParameters, &maskAndMatchParameters);
-	printf("ses_frer_relay_example :: %d\n\r", rv);
+	printf("sesFrerRelay_Example :: %d\n\r", rv);
 	return rv;
 }
 
-
-int32_t ses_frer_recovery_statistics_example(void) {
+/* Enable Loop Protection (MSTP or Miss Return) before configuring FRER */
+int32_t sesFrerIndividualRecovery_Example(void) {
 	int32_t rv = 0;
-
-	uint8_t destinationMAC[6] = { 0x11, 0x11, 0x11, 0x11, 0x11, 0x11 };
+	
+	uint8_t destinationMAC[6] = { 0x00, 0x00, 0x00, 0x11, 0x11, 0x11 };
 
 	TSN_ieee802Dot1cbFrer_t frerParameters;
 	TSN_ieee802Dot1cbStream_t streamParameters;
 	TSN_ieee802Dot1cbMaskAndMatch_t maskAndMatchParameters;
+
+	memset(&frerParameters, 0, sizeof(TSN_ieee802Dot1cbFrer_t));
+	memset(&streamParameters, 0, sizeof(TSN_ieee802Dot1cbStream_t));
+	memset(&maskAndMatchParameters, 0, sizeof(TSN_ieee802Dot1cbMaskAndMatch_t));
+
+	/* Stream table Parameters - Null Stream Identification */
+	streamParameters.TSN_streamIdentity.identificationType = TSN_nullStream;
+
+	/* Assigning Desination MAC address */
+	for (int i = 0; i < 6; i++) {
+		streamParameters.TSN_streamIdentity.TSN_parameters.TSN_nullStreamIdentification.destinationMac[i] = destinationMAC[i];
+	}
+
+	/* VLAN ID 100 */
+	streamParameters.TSN_streamIdentity.TSN_parameters.TSN_nullStreamIdentification.vlan = 100;
+
+	/* Egress traffic on port 0 */
+	streamParameters.portMap = SES_PORTMAP_PORT_0;
+	streamParameters.TSN_HardwareTableIndices.dynTblIdx[0] = -1;
+	streamParameters.TSN_HardwareTableIndices.dynTblIdx[1] = -1;
+	streamParameters.TSN_HardwareTableIndices.exTblruleId = -1;
+	streamParameters.useStreamtable = false;
+	streamParameters.usedCnt = 0;
+
+	/* Configure frer */
+	frerParameters.TSN_sequenceRecovery.port = SES_PORTMAP_PORT_1 | SES_PORTMAP_PORT_2;
+	frerParameters.TSN_sequenceRecovery.algorithm = TSN_match;
+	frerParameters.TSN_sequenceRecovery.resetTimeout = 0xffff;
+	frerParameters.TSN_sequenceRecovery.takeNoSequence = false;
+	frerParameters.TSN_sequenceRecovery.individualRecovery = true;
+
+	/* Set to 0xFF or 255 for listener/relay operation */
+	frerParameters.TSN_streamSplit.port = 0xFF;
+
+	/* Listener operation */
+	frerParameters.TagOperation = TSN_relayTagNoOperation;
+	frerParameters.TSN_HardwareTableIndices.individualRecoveryTblIdx = -1;
+	frerParameters.TSN_HardwareTableIndices.sequenceGenerationTblIdx = -1;
+	frerParameters.TSN_HardwareTableIndices.sequenceRecoveryTblIdx = -1;
+	frerParameters.TSN_HardwareTableIndices.txTransformTblIdx = -1;
+
+	/* Configure VLAN mode */
+	rv = SES_SetVlanMode(100, 0xFFF);
+	if (rv < SES_PORT_OK) {
+		printf("SES_SetVlanMode :: %d\n", rv);
+	}
+	/* SES_MstpExcludeVlanFromSpanningTree:
+	 * This function is used to exclude the VLAN from spanning tree.
+	 * This is necessary to prevent the spanning tree from managing the VLAN
+	 * when using spanning tree for loop protection.
+	 */
+
+	rv = SES_FrerConfigureRelaySystemForStream(&frerParameters, &streamParameters, &maskAndMatchParameters);
+	printf("Configure Individual Recovery :: %d\n\r", rv);
+
+	/* Configure frer */
+	frerParameters.TSN_sequenceRecovery.port = SES_PORTMAP_PORT_1 | SES_PORTMAP_PORT_2;
+	frerParameters.TSN_sequenceRecovery.algorithm = TSN_match;
+	frerParameters.TSN_sequenceRecovery.resetTimeout = 0xffff;
+	frerParameters.TSN_sequenceRecovery.takeNoSequence = false;
+	frerParameters.TSN_sequenceRecovery.individualRecovery = false;
+
+	rv = SES_FrerConfigureListenerProxyForStream(&frerParameters, &streamParameters, &maskAndMatchParameters);
+	printf("Configure Sequence Recovery :: %d\n\r", rv);
+	return rv;
+}
+
+int32_t sesFrerRecoveryStatistics_Example(void) {
+	int32_t rv = 0;
+
+	uint8_t destinationMAC[6] = { 0x00, 0x00, 0x00, 0x11, 0x11, 0x11 };
+
+	TSN_ieee802Dot1cbFrer_t frerParameters;
+	TSN_ieee802Dot1cbStream_t streamParameters;
+	TSN_ieee802Dot1cbMaskAndMatch_t maskAndMatchParameters;
+
+	memset(&frerParameters, 0, sizeof(TSN_ieee802Dot1cbFrer_t));
+	memset(&streamParameters, 0, sizeof(TSN_ieee802Dot1cbStream_t));
+	memset(&maskAndMatchParameters, 0, sizeof(TSN_ieee802Dot1cbMaskAndMatch_t));
 
 	/* Stream table Parameters - Null Stream Identification */
 	streamParameters.TSN_streamIdentity.identificationType = TSN_nullStream;
@@ -412,7 +516,6 @@ int32_t ses_frer_recovery_statistics_example(void) {
 	streamParameters.useStreamtable = false;
 
 	/* Configure frer */
-	frerParameters.TSN_sequenceRecovery.port = SES_PORTMAP_PORT_1 | SES_PORTMAP_PORT_2;
 	frerParameters.TSN_sequenceRecovery.algorithm = TSN_vector;
 	frerParameters.TSN_sequenceRecovery.historyLength = 2;
 	frerParameters.TSN_sequenceRecovery.resetTimeout = 0xffff;
@@ -445,26 +548,26 @@ int32_t ses_frer_recovery_statistics_example(void) {
 	printf("rxResets :: %llu\n", frerParametersRecovery.TSN_perPortPerStreamCounters.rxResets);
 	printf("encodeErroredPkts :: %llu\n", frerParametersRecovery.TSN_perPortPerStreamCounters.encodeErroredPkts);
 
-	printf("ses_frer_recovery_statistics_example :: %d\n\r", rv);
+	printf("sesFrerRecoveryStatistics_Example :: %d\n\r", rv);
 	return rv;
 }
 
 
-void SES_frerMain() {
+void sesFrer_Example() {
 
 	switch (FRER_CONFIG) {
 
 	case 0:
-		printf("Configuring FRER Talker :: %d", ses_frer_talker_example());
+		printf("Configuring FRER Talker :: %d", sesFrerTalker_Example());
 		break;
 
 	case 1:
-		printf("Configuring FRER Listener :: %d", ses_frer_listener_example());
+		printf("Configuring FRER Listener :: %d", sesFrerListener_Example());
 		break;
 
 	case 2:
-		printf("Configuring FRER Talker :: %d", ses_frer_talker_example());
-		printf("Configuring FRER Listener :: %d", ses_frer_listener_example());
+		printf("Configuring FRER Talker :: %d", sesFrerTalker_Example());
+		printf("Configuring FRER Listener :: %d", sesFrerListener_Example());
 		break;
 
 	default:

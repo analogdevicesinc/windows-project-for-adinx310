@@ -226,7 +226,7 @@
       <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\winpcap\Lib\x64;$(SolutionDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib;$(SolutionDir)lib\winpcap\Lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>wpcap.lib;iphlpapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -236,8 +236,8 @@
       <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\winpcap\Lib\x64;$(SolutionDir)lib;$(SolutionDir)lib\LibFT4222\dll\amd64;$(SolutionDir)lib\ftd2xx\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(SolutionDir)lib\ftd2xx\amd64\ftd2xx.lib;$(SolutionDir)lib\LibFT4222\dll\amd64\LibFT4222-64.lib;wpcap.lib;iphlpapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib;$(SolutionDir)lib\LibFT4222\dll\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(SolutionDir)lib\ftd2xx\amd64\ftd2xx.lib;$(SolutionDir)lib\LibFT4222\dll\amd64\LibFT4222-64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -306,8 +306,14 @@
     <ClCompile Include="adinx310-driver\ses-windows-port-srv\src\common\SES_PORT_firmware_update.c" />
     <ClCompile Include="adinx310-driver\ses-windows-port-srv\src\common\SES_PORT_memory.c" />
     <ClCompile Include="adinx310-driver\ses-windows-port-srv\src\common\SES_PORT_semaphore.c" />
-    <ClCompile Include="adinx310-driver\ses-windows-port-srv\src\eth\SES_PORT_ETH_interface.c" />
-    <ClCompile Include="adinx310-driver\ses-windows-port-srv\src\spi\SES_PORT_SPI_interface.c" />
+    <ClCompile Include="adinx310-driver\ses-windows-port-srv\src\eth\SES_PORT_ETH_interface.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Switch_SPI|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Switch_Ethernet|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="adinx310-driver\ses-windows-port-srv\src\spi\SES_PORT_SPI_interface.c">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Switch_SPI|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Switch_Ethernet|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="adinx310-driver\smp-stk\src\SMP_eth_fork.c" />
     <ClCompile Include="adinx310-driver\smp-stk\src\SMP_stack_api.c" />
     <ClCompile Include="example\src\main.c" />
@@ -410,7 +416,6 @@
     <ClInclude Include="example\inc\SES_example_logical_mac.h" />
     <ClInclude Include="example\inc\SES_example_mrp.h" />
     <ClInclude Include="example\inc\SES_example_mstp.h" />
-    <ClInclude Include="example\inc\SES_example_portConfig.h" />
     <ClInclude Include="example\inc\SES_example_preemption.h" />
     <ClInclude Include="example\inc\SES_example_prp_hsr.h" />
     <ClInclude Include="example\inc\SES_example_psfp.h" />

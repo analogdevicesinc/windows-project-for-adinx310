@@ -30,23 +30,22 @@ Ensure your system meets the following prerequisites:
 4. **External Libraries (Third-party libraries)**  
 
    - **winpcap/npcap**:  
-     - **4.1** Get the **winpcap** library and place it in the `/project/lib/winpcap/` folder. (Tested with version 4.1.3).  
-     - **4.2** Download it from [http://www.win10pcap.org/download/](http://www.win10pcap.org/download/).  
-     - **4.3** Alternatively, clone **winpcap** from the source:  
-       ```sh
-       git clone https://github.com/SoftEtherVPN/Win10Pcap
-       ```
-     - **4.4** `npcap` needs to be installed. You can install it through **Wireshark**. When installing NPCAP, ensure that the **Install Npcap in WinPcap
-API-compatible Mode** check box is selected. 
+     - **4.1** Get the **winpcap** library from: [winpcap](https://www.winpcap.org/devel.htm) (Tested with version 4.1.2).  
+     - **4.2** Download WinPcap 4.1.2 Developer's Pack.  
+     - **4.3** Create new folder as winpcap inside lib and paste Include and Lib folders from the downloaded Developer’s pack
+     - **4.4** `npcap` needs to be installed. You can install it through **Wireshark**. When installing NPCAP, ensure that the **Install Npcap in WinPcap API-compatible Mode** check box is selected. 
 
    - **ft42xx/libFT4222**:  [ Required if using SPI interface only ]
 
      The following dependencies must be resolved to ensure proper functionality when using the **SPI interface**. This Windows project uses the [UMFT4222EV](https://ftdichip.com/products/umft4222ev/) as an SPI dongle which can be plugged directly into the EVAL-ADIN6310EBZ or EVAL-ADIN6310T1LEBZ versions of board.
 
-     - **4.5** Download the latest available **CDM drivers** from [FTDI D2XX Drivers](https://ftdichip.com/drivers/d2xx-drivers/) and unzip them.  
-     - **4.6** Connect the device to a spare USB port on your PC. If the device is based on an **FT2232** chip, the Microsoft composite device driver is automatically loaded first.  
-     - **4.7** Go to the **D2XX Driver** website, download the driver (.exe file), and install it.  
-     - **4.8** Copy the `ftd2xx.dll` file to the `/project/lib/ftd2xx/` directory.
+     - **4.5** Download FT4222 library files from: [FTDI D2XX Drivers](https://ftdichip.com/software-examples/ft4222h-software-examples/)  
+     - **4.6** Download windows example 
+     - **4.7** Copy ftd2xx and LibFT4222 from “LibFT4222-v1.4.7\imports” to the lib folder of the windows project 
+     - **4.8** Copy dll contents of ftd2xx to outside the dll folder. 
+     - **4.9** Copy LibFT4222-64.dll from “lib\LibFT4222\dll\amd64” to the root folder of the project
+     - **5.0** Connect the device to a spare USB port on your PC. If the device is based on an **FT2232** chip, the Microsoft composite device driver is automatically loaded first.  
+     
 
 
 ## Build Configurations  
@@ -56,11 +55,13 @@ The project can be built in the following two configurations:
 1. **Switch_Ethernet**  
    - In this configuration, SPI-related dependencies (`ft42xx/libFT4222`) are not required.  
    - Only **pcap** dependencies need to be installed.  
+   - **Note**: While building the project in Switch_Ethernet configuration, ensure that SES_PORT_SPI_interface.c is excluded from the build 
 
 2. **Switch_SPI**  
    - This configuration requires all dependencies, including `ft42xx/libFT4222`, to be installed.  
    - It works exclusively with the **FT4222 SPI interface**.  
    - Using a different SPI interface will require modifications in the **porting layer** defined in `SES_PORT_interface.h`.  
+   - **Note**: While building the project in Switch_SPI configuration, ensure that SES_PORT_ETH_interface.c is excluded from the build
 
 ## Configuration and Features  
 
@@ -170,13 +171,14 @@ The `SES_configuration.h` file contains various macros that can be used to **ena
 		- CLOCK_TYPE 2: Boundary clock example  
 		- CLOCK_TYPE 3: Ordinary clock example
 		- CLOCK_TYPE 4: Transparent clock example
+    - **Note**: Once time synchronization is enabled, the user can also read various status parameters related to the time synchronization profile, such as Port State, Mean Link Delay, Sync Status, As-Capable status, and others.
  
 
 15. **VLAN_CONFIG**  
 	- Can be enabled for following VLAN examples:
 	- If TRUNK_ACCESS = 0, Configuring Port 3 and port 4 in Learn and Forward Mode for VLAN ID 10
 	- If TRUNK_ACCESS = 1, Trunk/Access example with following port configurations:
-		- Port 0 → Access port, VLAN ID 2, PCP 2
+		- Port 0 → Host Port, No VLAN configuration 
 		- Port 1 → Access port, VLAN ID 2, PCP 2
 		- Port 2 → Access port, VLAN ID 3, PCP 2
 		- Port 3 → Access port, VLAN ID 4, PCP 2
@@ -200,7 +202,11 @@ The `SES_configuration.h` file contains various macros that can be used to **ena
 	- Registered frames will egress out of Port 3.
 
 19. **PSFP**  
-    - (To be documented)  
+    - Can be enabled for the following PSFP examples:
+		- `0` : Disable
+		- `1` : Stream Filter Example
+		- `2` : Stream Gate Example
+		- `3` : Flow Meter Example
 
 20. **MSTP (Multiple Spanning Tree Protocol)**  
     - Set to 1 to configure multiple MST instances and enabled MSTP stack. If MSTP stack is already enabled, an error will be returned.
@@ -212,6 +218,8 @@ The `SES_configuration.h` file contains various macros that can be used to **ena
 		- `2` : Read Port Statistics
 		- `3` : StaticEntry installation 
 
+22. **Replacing Source MAC address using TxTranform**
+    - Enable UPDATE_SOURCE_MAC to replace the source MAC address of egress traffic on Port 1 and Port 2 when the destination address matches.
 ---
 
 

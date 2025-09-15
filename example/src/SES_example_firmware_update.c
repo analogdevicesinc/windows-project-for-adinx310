@@ -1,12 +1,12 @@
-/* 
- * Copyright 2024 Analog Devices, Inc.
- * 
+/*
+ * Copyright 2025 Analog Devices, Inc.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
- 
 #include "SES_example_firmware_update.h"
 #include "SES_configuration.h"
 #include "SES_firmware_update.h"
@@ -27,7 +26,8 @@ extern uint32_t SES_firmwareLength_g;
 extern uint8_t SES_bootloader_g[];
 extern uint32_t SES_bootloaderLength_g;
 
-void SES_ImageLoader_callback(uint8_t status);
+void sesImageLoaderCallback_Example(uint8_t status);
+
 
 
 /*This exmaple illustrate how to update the SES firmware by embedding the firmware character array into the build, 
@@ -35,7 +35,7 @@ void SES_ImageLoader_callback(uint8_t status);
 */
 
 /*To use below example, ensure LINK_FIRMWARE_ARRAY is not disabled */
-void SES_ImageLoaderSingleblock(void) {
+void sesImageLoaderSingleblock_Example(void) {
 
 
 	/*int8_t SES_ImageLoader(sesID_t sesId,
@@ -48,13 +48,13 @@ void SES_ImageLoaderSingleblock(void) {
 	sesID_t sesId = 0;
 
 	printf("Updating firmware in single block, reading Firmware for Character Array !! \n");
-	printf("Firmware API call status :: %d\n",SES_ImageLoader(sesId, SES_ImageLoader_callback, NULL, NULL, GetImageBlockFromCharacterArray));
+	printf("Firmware API call status :: %d\n",SES_ImageLoader(sesId, sesImageLoaderCallback_Example, NULL, NULL, GetImageBlockFromCharacterArray));
 	
 	
 }
 
 
-void SES_FirmwareUpdateFileSytemExample(void) {
+void sesFirmwareUpdateFileSytem_Example(void) {
 
 	/*int8_t SES_ImageLoader(sesID_t sesId,
 		SES_fwUpdateStatusCallback_tp statusCallback_p,
@@ -77,12 +77,12 @@ void SES_FirmwareUpdateFileSytemExample(void) {
 
 	sesID_t sesId = 0; 
 	char* path = "bin/firmware/ses-app.bin"; 
-	SES_ImageLoader(sesId, SES_ImageLoader_callback, SES_ImageLoadFromFileSetup, path, GetImageBlockFromFile); 
+	SES_ImageLoader(sesId, sesImageLoaderCallback_Example, SES_ImageLoadFromFileSetup, path, GetImageBlockFromFile); 
 
 }
 
-
-void SES_ImageLoader_callback(uint8_t status) {
+/* Call Back Function */
+void sesImageLoaderCallback_Example(uint8_t status) {
 
 	switch (status) {
 		case SES_IMAGE_SIZE_INVALID: {
@@ -154,11 +154,11 @@ void SES_ImageLoader_callback(uint8_t status) {
 }
 
 
-void firmwareUpdateExample(void) {
+void sesFirmwareUpdate_Example(void) {
 	if (MULTIPLE_BLOCK) {
-		SES_FirmwareUpdateFileSytemExample();
+		sesFirmwareUpdateFileSytem_Example();
 	}
 	else {
-		SES_ImageLoaderSingleblock();
+		sesImageLoaderSingleblock_Example();
 	}
 }
