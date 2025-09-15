@@ -1,12 +1,12 @@
-/* 
- * Copyright 2024 Analog Devices, Inc.
- * 
+/*
+ * Copyright 2025 Analog Devices, Inc.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
+
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "SES_codes.h"
 #include "SES_debug.h"
 #include "SES_igmp.h"
 
 
-void SES_test_IgmpEnable(void) {
+void sesTestIgmpEnable_Example(void) {
 
 	if (SES_IgmpEnable() != SES_OK) {
 		printf("IGMP Init Error!!\n");
@@ -32,7 +34,8 @@ void SES_test_IgmpEnable(void) {
 }
 
 
-void SES_test_IgmpDisable(void) {
+
+void sesTestIgmpDisable_Example(void) {
 
 	if (SES_IgmpDisable() != SES_OK) {
 		printf("IGMP Disable Error!!\n");
@@ -41,7 +44,7 @@ void SES_test_IgmpDisable(void) {
 		printf("IGMP Disable Success!!\n");
 }
 
-void SES_test_IgmpSetGroupTimeout(uint32_t seconds) {
+void sesTestIgmpSetGroupTimeout_Example(uint32_t seconds) {
 
 	if (seconds > 600 || seconds < 30) {
 		printf("Wrong timer value :: %d\n", seconds);
@@ -54,7 +57,7 @@ void SES_test_IgmpSetGroupTimeout(uint32_t seconds) {
 	}
 }
 
-void SES_test_IgmpSetRouterTimeout(uint32_t seconds) {
+void sesTestIgmpSetRouterTimeout_Example(uint32_t seconds) {
 	if (seconds > 300 || seconds < 1) {
 		printf("Wrong timer value :: %d\n", seconds);
 	}
@@ -67,7 +70,7 @@ void SES_test_IgmpSetRouterTimeout(uint32_t seconds) {
 	}
 }
 
-void SES_test_IgmpGetStatus() {
+void sesTestIgmpGetStatus_Example() {
 	SES_igmpStatus_t status_p;
 	if (SES_IgmpGetStatus(&status_p) == SES_OK) {
 		printf("IGMP Status :: %d\n", status_p.enable);
@@ -79,8 +82,8 @@ void SES_test_IgmpGetStatus() {
 	}
 }
 
-void igmp_main() {
-	SES_test_IgmpEnable();
-	SES_test_IgmpGetStatus();
+void sesIgmp_Example() {
+	sesTestIgmpEnable_Example();
+	sesTestIgmpGetStatus_Example();
 
 }

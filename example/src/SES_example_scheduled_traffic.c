@@ -1,18 +1,19 @@
-/* 
- * Copyright 2024 Analog Devices, Inc.
- * 
+/*
+ * Copyright 2025 Analog Devices, Inc.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 #include <string.h>
 #include <stdbool.h>
@@ -26,14 +27,14 @@
 #include "SES_debug.h"
 
 
-static int32_t test_SES_QbvGetQueueMaxSduTable(void);
-static int32_t test_SES_QbvSetQueueMaxSduTable(void);
-static int32_t test_SES_QbvGetGateParameters(void);
-static int32_t test_SES_QbvSetGateParameters(void);
-static int32_t test_SES_QbvGetStats(void);
+static int32_t sesQbvGetQueueMaxSduTable_Example(void);
+static int32_t sesQbvSetQueueMaxSduTable_Example(void);
+static int32_t sesQbvGetGateParameters_Example(void);
+static int32_t sesQbvSetGateParameters_Example(void);
+static int32_t sesQbvGetStats_Example(void);
 
 
-int32_t ses_test_scheduled_traffic_timer_example(void) {
+int32_t sesScheduledTrafficTimer_Example(void) {
 	int32_t rv = 0;
 
 	SES_gpioTimerConfig_t config;
@@ -87,7 +88,7 @@ int32_t ses_test_scheduled_traffic_timer_example(void) {
 }
 
 
-int32_t ses_test_scheduled_traffic_cycle_time_example(void) {
+int32_t sesScheduledTrafficCycleTime_Example(void) {
 	int32_t rv = 0;
 
 	TSN_ieee802_dot1q_types_port_number_t portNumber = 2;
@@ -120,7 +121,7 @@ int32_t ses_test_scheduled_traffic_cycle_time_example(void) {
 	return rv;
 }
 
-int32_t ses_test_scheduled_traffic_guard_band_example(void) {
+int32_t sesScheduledTrafficGuardBand_Example(void) {
 	int32_t rv = 0;
 
 	TSN_ieee802_dot1q_types_port_number_t portNumber = 2;
@@ -154,18 +155,18 @@ int32_t ses_test_scheduled_traffic_guard_band_example(void) {
 	return rv;
 }
 
-int32_t ses_test_scheduled_traffic_main(void) {
+int32_t sesScheduledTraffic_Main(void) {
 	int32_t rv = 0;
 	Sleep(20000);
 
-	rv = test_SES_QbvGetQueueMaxSduTable();
-	rv = test_SES_QbvSetQueueMaxSduTable();
+	rv = sesQbvGetQueueMaxSduTable_Example();
+	rv = sesQbvSetQueueMaxSduTable_Example();
 	printf("rv - %d \n", rv);
 	printf("ses_test_preemption_main error code = %d\n\r", rv);
 	return rv;
 }
 
-int32_t test_SES_QbvSetQueueMaxSduTable(void) {
+int32_t sesQbvSetQueueMaxSduTable_Example(void) {
 	int32_t rv = 0;
 	TSN_ieee802_dot1q_types_port_number_t portNumber = 4;
 	TSN_ieee802_dot1q_sched_queue_max_sdu_table_t queueMaxSduTable = { 1520, 1520, 1520, 1520, 1520, 1520, 1520, 1520 };
@@ -173,7 +174,7 @@ int32_t test_SES_QbvSetQueueMaxSduTable(void) {
 	return rv;
 }
 
-int32_t test_SES_QbvGetQueueMaxSduTable(void) {
+int32_t sesQbvGetQueueMaxSduTable_Example(void) {
 	int32_t rv = 0;
 	TSN_ieee802_dot1q_types_port_number_t portNumber = 4;
 	TSN_ieee802_dot1q_sched_queue_max_sdu_table_t queueMaxSduTable_p;
@@ -181,7 +182,7 @@ int32_t test_SES_QbvGetQueueMaxSduTable(void) {
 	return rv;
 }
 
-int32_t test_SES_QbvGetGateParameters(void) {
+int32_t sesQbvGetGateParameters_Example(void) {
 	int32_t rv = 0;
 	TSN_ieee802_dot1q_types_port_number_t portNumber = 4;
 	TSN_ieee802_dot1q_sched_gate_parameters_t gateParam_p;
@@ -189,7 +190,7 @@ int32_t test_SES_QbvGetGateParameters(void) {
 	return rv;
 }
 
-int32_t test_SES_QbvSetGateParameters(void) {
+int32_t sesQbvSetGateParameters_Example(void) {
 	int32_t rv = 0;
 
 	TSN_ieee802_dot1q_types_port_number_t portNumber = 2;
@@ -221,7 +222,7 @@ int32_t test_SES_QbvSetGateParameters(void) {
 	return rv;
 }
 
-int32_t test_SES_QbvGetStats(void) {
+int32_t sesQbvGetStats_Example(void) {
 	int32_t rv = 0;
 
 	TSN_ieee802_dot1q_types_port_number_t portNumber = 1;

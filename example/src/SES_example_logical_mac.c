@@ -1,18 +1,19 @@
-/* 
- * Copyright 2024 Analog Devices, Inc.
- * 
+/*
+ * Copyright 2025 Analog Devices, Inc.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 #include <string.h>
 #include <stdbool.h>
@@ -26,13 +27,13 @@
 
 static int32_t SES_rxlogicalmaccb(int32_t frameLength, uint8_t *frame_p, SES_frameAttributes_t *frameAttributes_p);
 static int32_t SES_rxlogicalmaccb2(int32_t frameLength, uint8_t *frame_p, SES_frameAttributes_t *frameAttributes_p);
-static int32_t test_SES_AddLogicalMac(void);
-static int32_t test_SES_DeleteLogicalMac(void);
-static int32_t test_SES_ConfigureLogicalMacFrame(void);
-static int32_t test_SES_ApplyForwardMask(void);
+static int32_t sesTestAddLogicalMac_Example(void);
+static int32_t sesTestDeleteLogicalMac_Example(void);
+static int32_t sesTestConfigureLogicalMacFrame_Example(void);
+static int32_t sesTestApplyForwardMask_Example(void);
 
 
-int32_t test_SES_logical_mac_two_logical_group_example(void) {
+int32_t sesTestLogicalMacTwoLogicalGroup_Example(void) {
 	int32_t rv = 0;
 	uint8_t portMap;
 	int8_t LinkPort;
@@ -47,6 +48,7 @@ int32_t test_SES_logical_mac_two_logical_group_example(void) {
 	logicalMacConfig.rxLogicalMacCallback = SES_rxlogicalmaccb;
 	rv = SES_AddLogicalMac(&logicalMacConfig, &logicalMacReturns);
 
+	
 	memcpy(&logicalMacConfig2.logicalMac, macAddress_g2, 6);
 	logicalMacConfig2.portMap = 0x5;
 	logicalMacConfig2.deviceLinkPort = 0;
@@ -57,7 +59,7 @@ int32_t test_SES_logical_mac_two_logical_group_example(void) {
 }
 
 
-int32_t test_SES_logical_mac_two_by_three_logical_group_example(void) {
+int32_t sesTestLogicalMacTwoByThreeLogicalGroup_Example(void) {
 	int32_t rv = 0;
 	uint8_t portMap;
 	int8_t LinkPort;
@@ -82,15 +84,15 @@ int32_t test_SES_logical_mac_two_by_three_logical_group_example(void) {
 }
 
 
-int32_t test_SES_logical_mac_main(void) {
+int32_t sesTestLogicalMac_Example(void) {
 	int32_t rv = 0;
-	rv = test_SES_AddLogicalMac();
+	rv = sesTestAddLogicalMac_Example();
 	printf("rv - %d \n", rv);
-	rv = test_SES_DeleteLogicalMac();
+	rv = sesTestDeleteLogicalMac_Example();
 	printf("rv - %d \n", rv);
-	rv = test_SES_ConfigureLogicalMacFrame();
+	rv = sesTestConfigureLogicalMacFrame_Example();
 	printf("rv - %d \n", rv);
-	rv = test_SES_ApplyForwardMask();
+	rv = sesTestApplyForwardMask_Example();
 	printf("rv - %d \n", rv);
 	
 
@@ -98,7 +100,7 @@ int32_t test_SES_logical_mac_main(void) {
 	return rv;
 }
 
-int32_t test_SES_AddLogicalMac(void) {
+int32_t sesTestAddLogicalMac_Example(void) {
 	int32_t rv = 0;
 	uint8_t macAddress_g[6] = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16 };
 	SES_logicalMacConfig_t logicalMacConfig;
@@ -111,7 +113,7 @@ int32_t test_SES_AddLogicalMac(void) {
 	return rv;
 }
 
-int32_t test_SES_DeleteLogicalMac(void) {
+int32_t sesTestDeleteLogicalMac_Example(void) {
 	int32_t rv = 0;
 	uint16_t entryIndex = 0;
 	uint8_t macAddress_g[6] = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16 };
@@ -119,7 +121,7 @@ int32_t test_SES_DeleteLogicalMac(void) {
 	return rv;
 }
 
-int32_t test_SES_ConfigureLogicalMacFrame(void) {
+int32_t sesTestConfigureLogicalMacFrame_Example(void) {
 	int32_t rv = 0;
 	uint8_t portNum = 1;
 	uint8_t replaceaddr[6] = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16 };
@@ -128,7 +130,7 @@ int32_t test_SES_ConfigureLogicalMacFrame(void) {
 	return rv;
 }
 
-int32_t test_SES_ApplyForwardMask(void) {
+int32_t sesTestApplyForwardMask_Example(void) {
 	int32_t rv = 0;
 	uint8_t portNum = 0;
 	uint8_t portMap = 6;

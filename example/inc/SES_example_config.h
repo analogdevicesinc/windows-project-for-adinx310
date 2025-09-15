@@ -1,5 +1,5 @@
 /* 
- * Copyright 2024 Analog Devices, Inc.
+ * Copyright 2025 Analog Devices, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,20 +28,20 @@
  * @brief Initializes the SES driver.
  * @return int32_t SES return status code
  */
-int32_t ses_config(void);
+int32_t sesConfig(void);
 
 
 /**
  * @brief Configuration the SES based upon paramters passed in SES_configuration file.
  * 
  */
-void SES_switch_configuration(void);
+void sesProtocolInitialization_Example(void);
 
 
 /**
  * @brief Gives you the firmware details.
  * @return int32_t SES return status code
  */
-void ses_getAppInfo(void);
+void sesGetAppInfo_Example(void);
 
 #endif

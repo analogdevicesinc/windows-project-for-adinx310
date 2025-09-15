@@ -1,5 +1,5 @@
 /* 
- * Copyright 2024 Analog Devices, Inc.
+ * Copyright 2025 Analog Devices, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,45 +23,46 @@
 #include "SES_codes.h"
 #include "SES_debug.h"
 #include "SES_configuration.h"
-
 #include "SES_lldp.h"
 
-
-static void SES_eventCb(sesID_t sesId, int32_t eventID, void* param_p);
-static int32_t SES_LLDP_eventCb(sesID_t sesId, int32_t eventID, void* param_p);
-static int32_t SES_Timer_eventCb(sesID_t sesId, int32_t eventID, void* param_p);
+/* Call Back Functions */
+static void sesEventCb_Example(sesID_t sesId, int32_t eventID, void* param_p);
+static int32_t sesLldpEventCb_Example(sesID_t sesId, int32_t eventID, void* param_p);
+static int32_t sesTimerEventCb(sesID_t sesId, int32_t eventID, void* param_p);
 
 
 /*Link Event Example*/
-int32_t ses_linkEvent_example(void) {
+int32_t sesLinkEvent_Example(void) {
 	int32_t rv = 0;
 
 	/*Subscribe to Link UP Event*/
 	SES_eventId_t eventId = SES_linkUpEvent;
-	rv = SES_SubscribeEvent(eventId, SES_eventCb);
+	rv = SES_SubscribeEvent(eventId, sesEventCb_Example);
 	printf("SES_Subscribe link Up Event - %d \n", rv);
 
 	/*Subscribe to Link Down Event*/
 	eventId = SES_linkDownEvent;
-	rv = SES_SubscribeEvent(eventId, SES_eventCb);
+	rv = SES_SubscribeEvent(eventId, sesEventCb_Example);
 	printf("SES_Subscribe link Down Event - %d \n", rv);
 
 
 	return rv;
 }
 
-void SES_eventCb(sesID_t sesId, int32_t eventID, void* param_p) {
-	
+void sesEventCb_Example(sesID_t sesId, int32_t eventID, void* param_p) {
+
+	/* Retrieve the event parameters related to Link Events */
+	SES_linkEventParam_t* captureParam = (SES_linkEventParam_t*)param_p; 
 	switch (eventID)
 	{
 		case 0:
 			printf("Handle Config Complete event\n");
 			break;
 		case 1:
-			printf("Handle Link Up event\n");
+			printf("Handle Link Up event for port :: %d\n", captureParam->port);
 			break;
 		case 2:
-			printf("Handle Link Down event\n");
+			printf("Handle Link Down event for port :: %d\n", captureParam->port); 
 			break;
 		case 3:
 			printf("Handle MAC Address updated event\n");
@@ -78,9 +79,17 @@ void SES_eventCb(sesID_t sesId, int32_t eventID, void* param_p) {
 	}
 }
 
-/*LLDP Event Example*/
+/*LLDP Event Example
+ * This example demonstrates LLDP event handling with two SES devices connected
+ * in a daisy-chain configuration.
+ *
+ * For daisy-chain setup, refer the provoded example "sesETH_ETHInit_Example" in SES_example_init.c.
+ *
+ * The example subscribes to multiple LLDP-related events defined in SES_event.h.
+ * The user must define a callback function on the host side to handle these events.
+ */
 
-int32_t ses_event_lldp_example(void) {
+int32_t sesEventLldp_Example(void) {
 	int32_t rv = 0;
 
 	SES_eventId_t eventId;
@@ -89,19 +98,19 @@ int32_t ses_event_lldp_example(void) {
 	rv = SES_MX_LLDP_Start(1);
 
 	eventId = SES_lldpNewNeighborEvent;
-	rv = SES_SubscribeEvent(eventId, SES_LLDP_eventCb);
+	rv = SES_SubscribeEvent(eventId, sesLldpEventCb_Example);
 	printf("SES_Subscribe lldp NewNeighbor Event - %d \n", rv);
 
 	eventId = SES_lldpNeighborShutdownEvent;
-	rv = SES_SubscribeEvent(eventId, SES_LLDP_eventCb);
+	rv = SES_SubscribeEvent(eventId, sesLldpEventCb_Example);
 	printf("SES_Subscribe lldp Neighbor Shutdown Event - %d \n", rv);
 	
 	eventId = SES_lldpSomethingChangedRemoteEvent;
-	rv = SES_SubscribeEvent(eventId, SES_LLDP_eventCb);
+	rv = SES_SubscribeEvent(eventId, sesLldpEventCb_Example);
 	printf("SES_Subscribe lldp Something Changed Remote Event - %d \n", rv);
 	
 	eventId = SES_lldpMibStatsChangedEvent;
-	rv = SES_SubscribeEvent(eventId, SES_LLDP_eventCb);
+	rv = SES_SubscribeEvent(eventId, sesLldpEventCb_Example);
 	printf("SES_Subscribe lldp MibStats Changed Event - %d \n", rv);
 
 
@@ -112,7 +121,7 @@ int32_t ses_event_lldp_example(void) {
 	return rv;
 }
 
-int32_t SES_LLDP_eventCb(sesID_t sesId, int32_t eventID, void* param_p) {
+int32_t sesLldpEventCb_Example(sesID_t sesId, int32_t eventID, void* param_p) {
 	int32_t rv = 0;
 	switch (eventID)
 	{
@@ -133,8 +142,13 @@ int32_t SES_LLDP_eventCb(sesID_t sesId, int32_t eventID, void* param_p) {
 }
 
 
-/*Subscribe to Input Capture Event*/
-void SES_timer_Event_test() {
+
+/*Subscribe to Input Capture Event and configure Timer3 
+* to be an input capture pin.When a rising edge is detected on Timer3,
+* it will trigger an event and capture a timestamp.Use with the Timer 
+* Event callback function to access the timestamp information
+*/
+void sesTimerEventTest_Example() {
 	SES_eventId_t eventId = SES_inputCaptureEvent;
 	/* gpio7 is Timer3
 	*  TIMER3 TO TRIGGER CAPTURE OF TIMESTAMPS
@@ -150,7 +164,7 @@ void SES_timer_Event_test() {
 		config_p.captureEdge = 1;
 	}
 	printf("SetGpioTimerConfigTimer3 :: %d\n", SES_SetGpioTimerConfig(signalTimer3, &config_p));
-	if (0 <= SES_SubscribeEvent(eventId, SES_Timer_eventCb)) {
+	if (0 <= SES_SubscribeEvent(eventId, sesTimerEventCb)) {
 		printf("Timer Event Subscribed success!!");
 	}
 	while (1) {
@@ -159,7 +173,7 @@ void SES_timer_Event_test() {
 }
 
 /*Event Callback*/
-int32_t SES_Timer_eventCb(sesID_t sesId, int32_t eventID, void* param_p) {
+int32_t sesTimerEventCb(sesID_t sesId, int32_t eventID, void* param_p) {
 	printf("Event ID :: %d\n", eventID);
 	SES_inputCaptureEventParam_t* captureParam = (SES_inputCaptureEventParam_t*)param_p;
 	printf("interfaceIdx - %d\n", captureParam->interfaceIdx);
@@ -170,21 +184,21 @@ int32_t SES_Timer_eventCb(sesID_t sesId, int32_t eventID, void* param_p) {
 }
 
 
-void eventExampleMain() {
+void sesEvent_Example() {
 
 	switch (EVENT) {
 	case 1: 
 		printf("Enabling Link Event Example \n");
-		ses_linkEvent_example();
+		sesLinkEvent_Example();
 		break;
 	case 2:
 		printf("Enabling LLDP Event Example \n");
-		ses_event_lldp_example();
+		sesEventLldp_Example();
 		break;
 
 	case 3: 
 		printf("Enabling Timer Event Example\n");
-		SES_timer_Event_test();
+		sesTimerEventTest_Example();
 		break;
 	default:
 		printf("Invalid Input!!");

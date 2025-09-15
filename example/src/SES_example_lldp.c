@@ -1,12 +1,12 @@
-/* 
- * Copyright 2024 Analog Devices, Inc.
- * 
+/*
+ * Copyright 2025 Analog Devices, Inc.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -22,8 +23,9 @@
 #include "SES_lldp.h"
 #include "SES_codes.h"
 
+
 /* Initialize LLDP Stack and Start */
-void SES_test_LLDP_Init(void) {
+void sesLldpInit_Example(void) {
 	
 	if (SES_OK == SES_LLDP_Init()) {
 		if (SES_OK == SES_LLDP_Start()) {
@@ -33,14 +35,14 @@ void SES_test_LLDP_Init(void) {
 
 }
 
-int32_t test_SES_LLDP_TxSendNow(void) {
+int32_t sesLldpTxSendNow_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort0;
 	rv = SES_LLDP_TxSendNow(mac);
 	return rv;
 }
 
-int32_t test_SES_LLDP_GetActivePeerIds(void) {
+int32_t sesLldpGetActivePeerIds_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort5;
 	uint32_t peerIdMap_p;
@@ -48,7 +50,7 @@ int32_t test_SES_LLDP_GetActivePeerIds(void) {
 	return rv;
 }
 
-int32_t test_SES_LLDP_GetAdminConfig(void) {
+int32_t sesLldpGetAdminConfig_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort5;
 	SES_LLDP_adminConfig_t adminConfig_p;
@@ -56,7 +58,7 @@ int32_t test_SES_LLDP_GetAdminConfig(void) {
 	return rv;
 }
 
-int32_t test_SES_LLDP_SetAdminConfig(void) {
+int32_t sesLldpSetAdminConfig_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort5;
 	SES_LLDP_adminConfig_t adminConfig_p = {
@@ -79,14 +81,14 @@ int32_t test_SES_LLDP_SetAdminConfig(void) {
 	return rv;
 }
 
-int32_t test_SES_LLDP_UpdateTxTlv(void) {
-	int32_t rv = 0;
-	SES_mac_t mac = SES_macPort0;
-	SES_LLDP_tlvIdentifier_t tlvId_p = {
-		.tlvType = 4,
-		.infoLen = 0
-	};
 
+int32_t sesLldpUpdateTxTlv_Example(void) { 
+	int32_t rv = 0; 
+	SES_mac_t mac = SES_macPort0; 
+	SES_LLDP_tlvIdentifier_t tlvId_p = { 
+		.tlvType = 4, 
+		.infoLen = 0 
+	}; 	 	
 	/* Update tlvType4 (Port Description TLV) to Analog Devices */
 	uint8_t tlvData_p[14]= { 0x41, 0x6e, 0x61, 0x6c, 0x6f, 0x67, 0x20, 0x44, 0x65, 0x76, 0x69, 0x63, 0x65, 0x73	};
 	uint16_t tlvDataLen = 14;
@@ -95,7 +97,9 @@ int32_t test_SES_LLDP_UpdateTxTlv(void) {
 	return rv;
 }
 
-int32_t test_SES_LLDP_RemoveTxTlv(void) {
+
+
+int32_t sesLldpRemoveTxTlv_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort5;
 	SES_LLDP_tlvIdentifier_t tlvId_p = {
@@ -107,7 +111,7 @@ int32_t test_SES_LLDP_RemoveTxTlv(void) {
 	return rv;
 }
 
-int32_t test_SES_LLDP_QueryTxTlv(void) {
+int32_t sesLldpQueryTxTlv_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort5;
 	SES_LLDP_tlvQueryIn_t txTlvQueryIn_p = {
@@ -126,9 +130,9 @@ int32_t test_SES_LLDP_QueryTxTlv(void) {
 	return rv;
 }
 
-int32_t test_SES_LLDP_QueryRxTlv(void) {
-	int32_t rv = 0;
+int32_t sesLldpQueryRxTlv_Example(void) {
 
+	int32_t rv = 0; 
 	rv = SES_MX_LLDP_Start(1);
 	SES_mac_t mac1 = SES_macPort2;
 	SES_LLDP_tlvQueryIn_t txTlvQueryIn_p1 = {
@@ -157,7 +161,7 @@ int32_t test_SES_LLDP_QueryRxTlv(void) {
 	return rv;
 }
 
-int32_t test_SES_LLDP_TxEnable(void) {
+int32_t sesLldpTxEnable_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort5;
 	uint16_t txInterval = 1000;
@@ -166,15 +170,18 @@ int32_t test_SES_LLDP_TxEnable(void) {
 	return rv;
 }
 
-int32_t test_SES_LLDP_TxEnabled(void) {
+
+int32_t sesCheckLldpTxEnabled_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort2;
-	bool *enabled_p;
-	rv = SES_LLDP_TxEnabled(mac, &enabled_p);
+	bool enabled_p;
+	rv = SES_LLDP_TxEnabled(mac, &enabled_p); 
 	return rv;
 }
+ 
+ 
 
-int32_t test_SES_LLDP_RxEnable(void) {
+int32_t sesLLDPRxEnable_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort5;
 	bool enable = true;
@@ -182,15 +189,16 @@ int32_t test_SES_LLDP_RxEnable(void) {
 	return rv;
 }
 
-int32_t test_SES_LLDP_RxEnabled(void) {
+int32_t sesCheckLLDPRxEnabled_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort2;
-	bool *enabled_p;
+	bool enabled_p;
 	rv = SES_LLDP_RxEnabled(mac, &enabled_p);
 	return rv;
 }
 
-int32_t test_SES_LLDP_GetLocalSystemData(void) {
+
+int32_t sesLLDPGetLocalSystemData_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort5;
 	SES_LLDP_localSystemData_t localSysData_p;
@@ -198,14 +206,14 @@ int32_t test_SES_LLDP_GetLocalSystemData(void) {
 	return rv;
 }
 
-int32_t test_SES_LLDP_GetRemoteStatistics(void) {
+int32_t sesLLDPGetRemoteStatistics_Example(void) {
 	int32_t rv = 0;
 	SES_LLDP_remoteStatistics_t remoteStats_p;
 	rv = SES_LLDP_GetRemoteStatistics(&remoteStats_p);
 	return rv;
 }
 
-int32_t test_SES_LLDP_GetTxStatistics(void) {
+int32_t sesLLDPGetTxStatistics_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort5;
 	SES_LLDP_txStatistics_t txStats_p;
@@ -213,7 +221,7 @@ int32_t test_SES_LLDP_GetTxStatistics(void) {
 	return rv;
 }
 
-int32_t test_SES_LLDP_GetRxStatistics(void) {
+int32_t sesLLDPGetRxStatistics_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort5;
 	SES_LLDP_rxStatistics_t rxStats_p;
@@ -221,7 +229,7 @@ int32_t test_SES_LLDP_GetRxStatistics(void) {
 	return rv;
 }
 
-int32_t test_SES_LLDP_GetPortMac(void) {
+int32_t sesLLDPGetPortMac_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort5;
 	uint8_t *addrBuf_p;
@@ -229,7 +237,7 @@ int32_t test_SES_LLDP_GetPortMac(void) {
 	return rv;
 }
 
-int32_t test_SES_LLDP_SetPortMac(void) {
+int32_t sesLLDPSetPortMac_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort5;
 	uint8_t *addrBuf_p;

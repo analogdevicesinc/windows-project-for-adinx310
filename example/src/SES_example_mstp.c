@@ -1,18 +1,19 @@
-/* 
- * Copyright 2024 Analog Devices, Inc.
- * 
+/*
+ * Copyright 2025 Analog Devices, Inc.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 #include <string.h>
 #include <stdbool.h>
@@ -24,7 +25,7 @@
 #include "SES_debug.h"
 
 /* Initialize LLDP Stack and Start */
-int32_t ses_mstp_stack_start(void) {
+int32_t sesMstpStackStart_Example(void) {
 	int32_t rv = SES_ERROR;
 	
 	rv = SES_MstpStart();
@@ -36,7 +37,8 @@ int32_t ses_mstp_stack_start(void) {
 	return rv;
 }
 
-int32_t ses_multiple_msti_example(void){
+
+int32_t sesMultipleMsti_Example(void){
 	int32_t rv = SES_ERROR;
 
 	uint8_t mstId0;
@@ -60,7 +62,7 @@ int32_t ses_multiple_msti_example(void){
 
 /* Array length set arbitrarily to 16 */
 #define SES_VLAN_ID_ARRAY_LENGTH 16
-int32_t ses_get_vlan_to_msti_map_example(void){
+int32_t sesGetVlanToMstiMap_Example(void){
 	int32_t rv = SES_ERROR;
 	
 	uint8_t msti = 0;
@@ -80,7 +82,7 @@ int32_t ses_get_vlan_to_msti_map_example(void){
 	return rv;
 }
 
-int32_t ses_bridge_forward_delay_example(void){
+int32_t sesBridgeForwardDelay_Example(void){
 	int32_t rv = SES_ERROR;
 	/* Bridge Hello Time range: 1 to 10. Default value: 2.
 	 * Bridge Max Age range: 6 to 40. Default value: 20.

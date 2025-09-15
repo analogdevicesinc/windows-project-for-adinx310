@@ -1,12 +1,12 @@
-/* 
- * Copyright 2024 Analog Devices, Inc.
- * 
+/*
+ * Copyright 2025 Analog Devices, Inc.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,34 +14,36 @@
  * limitations under the License.
  */
 
+
 #ifndef INC_SES_TEST_PREEMPTION_H_
 #define INC_SES_TEST_PREEMPTION_H_
 
 #include <stdint.h>
 
 /**
- * @brief Using frame preemption config structure.
+ * @brief Configure preemption using a configuration structure.
  * 
  */
-void test_SES_PREEMPT_SetPreemptionConfig(void);
+void sesSetPreemptionConfigurationStructure_Example(void);
 
 /**
- * @brief Using frame preemption config structure, using individual APIs.
+ * @brief Configure preemption using multiple preemption APIs.
  * 
  */
-void ses_test_preemption_config_api_example(void);
+void sesSetPreemptionConfigurationApi_Example(void);
 
 /**
- * @brief Disable preemption support on physical portx.
+ * @brief Example to disable preemption.
  * 
  */
-void disablePreemptionExample(void);
+void sesDisablePreemption_Example(void);
 
 /**
- * @brief Gets preemption statistics.
+ * @brief Example to retrieve preemption statistics.
  * 
  */
-void getPreemptionStats_Example(void);
+void sesGetPreemptionStatistics_Example(void);
+
 
 
 #endif /* INC_SES_TEST_PREEMPTION_H_ */
