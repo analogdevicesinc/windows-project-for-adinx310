@@ -1,12 +1,12 @@
-/* 
- * Copyright 2024 Analog Devices, Inc.
- * 
+/*
+ * Copyright 2025 Analog Devices, Inc.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
+
+
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "SES_example_frame_api.h"
 #include "SES_frame_api.h"
 #include "SES_codes.h"
 #include "SES_debug.h"
 #include "SES_configuration.h"
 
-
-void addStaticEntry() {
+/* Example of static entry forwarding frames to Packet Assist Engine */
+void sesL2ReceiveFrameStaticEntry_Example() {
 	int32_t rv = SES_OK;
 	/*Attribute of interest*/
 	uint32_t portAttribute = SES_REQUEST_PORT_ATTRIBUTE;
 	/*Frames requested with this MAC address*/
-	uint8_t macAddr[6] = { 0x22, 0x22, 0x22, 0x22, 0x22, 0x22 };
+	uint8_t macAddr[6] = { 0x00, 0x00, 0x00, 0x11, 0x11, 0x11 };
 	/*low priority = 0, entry will be placed towards bottom of table*/
 	uint8_t lookupPriority = 0;
 	uint8_t macMask[6] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
@@ -82,8 +85,8 @@ void addStaticEntry() {
 		&index));
 }
 
-
-void SES_test_rxCallback_t(int32_t frameLength, uint8_t* frame_p, SES_frameAttributes_t* frameAttributes_p) {
+/* Example of callback printing received frames */
+void sesL2RxCallback_Example(int32_t frameLength, uint8_t* frame_p, SES_frameAttributes_t* frameAttributes_p) {
 
 	printf("Packet Received!!! %d\n", frameLength);
 	printf("Received Packet :: \n");
@@ -94,88 +97,8 @@ void SES_test_rxCallback_t(int32_t frameLength, uint8_t* frame_p, SES_frameAttri
 	printf("\n");
 }
 
-/*Example of requesting rames with the specified DMAC received at the stack processor*/
-int32_t ses_l2_receive_example_MAC_stackProcessor() {
-
-	int32_t rv = SES_OK;
-	uint8_t macAddress_g[6] = { 0x22, 0x22, 0x22, 0x22, 0x22, 0x22 }; 
-
-	addStaticEntry();
-
-	printf("Requesting L2 Packet Receive by MAC :: %d\n", SES_RxStackProcessorFramesByMac(macAddress_g, SES_test_rxCallback_t));
-
-	while (1) {
-		Sleep(30);
-	}
-}
-
-/*Example of requesting rames with the specified ethertype received at the stack processor*/
-int32_t ses_l2_receive_example_ethertype_stackProcessor() {
-	
-	int32_t rv = SES_OK;
-	/*Frames requested with this Ethertype*/
-	uint16_t ethertype = 0x1234; 
-	addStaticEntry();
-	rv = SES_RxStackProcessorFramesByEtype(ethertype, SES_test_rxCallback_t);
-	printf("SES_RxStackProcessorFramesByEtype rv :: %d\n", rv);
-
-	while (1) {
-		Sleep(30);
-	}
-
-}
-
-
-int32_t ses_l2_receive_example_ethertype() {
-
-	int32_t rv = SES_OK;
-	/*Frames requested with this Ethertype (second priority)*/
-	uint16_t ethertype = 0x1234; 
-	uint8_t data = 0xAA;
-	uint8_t mask = 0xFF;
-	uint8_t offset = 2;
-	uint32_t attributeRequest = SES_REQUEST_PORT_ATTRIBUTE;
-
-	addStaticEntry();
-
-	printf("Requesting L2 Packet Receive :: %d\n", SES_RxSesFramesByEtype(ethertype, data, mask, offset, attributeRequest, SES_test_rxCallback_t));
-
-	while (1) {
-		Sleep(30);
-	}
-
-	return rv;
-
-}
-
-
-int32_t ses_l2_receive_example_MAC() {
-
-
-	/*  int32_t SES_RxSesFramesByMac(uint8_t * mac_p,
-	*	uint32_t attributeRequest,
-	*	SES_rxCallback_tp callback_p);
-	*/
-
-	int32_t rv = SES_OK;
-	uint8_t macAddress_g[6] = { 0x22, 0x22, 0x22, 0x22, 0x22, 0x22 };
-	uint32_t attributeRequest = SES_REQUEST_FREERUN_TIMESTAMP_ATTRIBUTE;
-
-	addStaticEntry();
-
-	printf("Requesting L2 Packet Receive :: %d\n", SES_RxSesFramesByMac(macAddress_g, attributeRequest, SES_test_rxCallback_t));
-
-	while (1) {
-		
-		Sleep(30);
-	}
-
-	return rv;
-
-}
-
 /*Example of transmitting a frame out on all ports*/
-int32_t ses_l2_transmit_example() {
+int32_t sesL2Transmit_Example() {
 	int32_t rv = SES_OK;
 	uint8_t pkt_p[] = { 0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0x22, 0x22, 0x22,
 						0x22, 0x22, 0x22, 0xaa, 0xc5, 0x40, 0x64, 0x81, 0x00, 0x8F,
@@ -197,7 +120,6 @@ int32_t ses_l2_transmit_example() {
 		.ses = {
 			.generateFcs = 1,
 			.xmitPriority = 2,
-			// .egressPortMap = SES_USE_FORWARDING_TABLE,
 			.egressPortMap = 0xFF,
 			.transformId = SES_NO_TRANSFORM,
 			.attributeRequest = 0
@@ -207,26 +129,22 @@ int32_t ses_l2_transmit_example() {
 	return rv;
 }
 
+int32_t sesRxSesFramesByMac_Example() {
+	int32_t rv = SES_OK;
+	uint8_t macAddress_g[6] = { 0x00, 0x00, 0x00, 0x11, 0x11, 0x11 };
+	uint32_t attributeRequest = SES_REQUEST_FREERUN_TIMESTAMP_ATTRIBUTE;
 
-/* Retrieve the Layes 2 packets from a desiganated Ethertype from a MAC */
-void SES_ExampleRxSesFramesByEtypeOnly(void) {
+	/*Static entry is required to send the packets to AE*/
+	sesL2ReceiveFrameStaticEntry_Example();
 
-	/*int32_t SES_RxSesFramesByEtypeOnly(uint16_t ethertype,
-		uint32_t attributeRequest,
-		SES_rxCallback_tp callback_p);*/
-
-	uint16_t ethertype = 0x1234;
-	uint32_t attributeRequest = SES_REQUEST_PORT_ATTRIBUTE;
-
-	/*Static entry is required to send the packets to AE */
-	addStaticEntry();
-
-	printf("L2 Packet Receive by Ethertype Only :: %d\n", SES_RxSesFramesByEtypeOnly(ethertype, attributeRequest, SES_test_rxCallback_t));
+	rv = SES_RxSesFramesByMac(macAddress_g, attributeRequest, sesL2RxCallback_Example);
+	printf("Requesting L2 Packet Receive by MAC Address :: %d\n", rv);
 
 	while (1) {
 		Sleep(30);
 	}
 
+	return rv;
 }
 
 /* Retrieve the Frames with the specified ethertype and data received at a SES port
@@ -235,15 +153,8 @@ void SES_ExampleRxSesFramesByEtypeOnly(void) {
  *        using the SES_matchData_t
  */
 /*In the below example, the ethertype will be matched along with the data1, data2 and data3 post ethertype data  */
-void SES_ExampleRxSesFramesByEtype(void) {
-
-	/*int32_t SES_RxSesFramesByEtype(uint16_t ethertype,
-		uint16_t ethertypeMask,
-		uint8_t matchCount,
-		const SES_matchData_t * matchData_p,
-		uint32_t attributeRequest,
-		SES_rxCallback_tp callback_p);*/
-
+int32_t sesRxSesFramesByEtype_Example(void) {
+	int32_t rv = SES_OK;
 	const uint8_t data1[] = { 0xaa };
 	const uint8_t data2[] = { 0xbb };
 	const uint8_t data3[] = { 0xcc };
@@ -257,47 +168,94 @@ void SES_ExampleRxSesFramesByEtype(void) {
 	uint32_t attributeRequest = SES_REQUEST_PORT_ATTRIBUTE;
 
 	/*Static entry is required to send the packets to AE*/
-	addStaticEntry();
+	sesL2ReceiveFrameStaticEntry_Example();
 
-	printf("L2 Packet Receive by Ethertype along with othe matches :: %d\n", SES_RxSesFramesByEtype(ethertype, ethertypeMask, matchCount, matchData_p, attributeRequest, SES_test_rxCallback_t));
+	rv = SES_RxSesFramesByEtype(ethertype, ethertypeMask, matchCount, matchData_p, attributeRequest, sesL2RxCallback_Example);
+	printf("L2 Packet Receive by Ethertype along with other matches :: %d\n", rv); 
 
 	while (1) {
 		Sleep(30);
 	}
+	return rv;
 
 }
 
+/* Retrieve the Layes 2 packets from a desiganated Ethertype from a MAC */
+int32_t sesRxSesFramesByEtypeOnly_Example(void) {
+	int32_t rv = SES_OK;
+	uint16_t ethertype = 0x1234;
+	uint32_t attributeRequest = SES_REQUEST_PORT_ATTRIBUTE;
 
+	/*Static entry is required to send the packets to AE */
+	sesL2ReceiveFrameStaticEntry_Example();
 
-void ses_layer2_main() {
+	rv = SES_RxSesFramesByEtypeOnly(ethertype, attributeRequest, sesL2RxCallback_Example);
+	printf("L2 Packet Receive by Ethertype Only :: %d\n", rv);
+
+	while (1) {
+		Sleep(30);
+	}
+	return rv;
+}
+
+/*Example of requesting frames with the specified DMAC received at the stack processor*/
+int32_t sesRxStackProcessorFramesByMac_Example() {
+	int32_t rv = SES_OK;
+	uint8_t macAddress_g[6] = { 0x22, 0x22, 0x22, 0x22, 0x22, 0x22 }; 
+
+	rv = SES_RxStackProcessorFramesByMac(macAddress_g, sesL2RxCallback_Example);
+	printf("Requesting L2 Packet Receive by MAC :: %d\n", rv);
+
+	while (1) {
+		Sleep(30);
+	}
+	return rv;
+}
+
+/*Example of requesting frames with the specified ethertype received at the stack processor*/
+int32_t sesRxStackProcessorFramesByEtype_Example() {
+	int32_t rv = SES_OK;
+	/*Frames requested with this Ethertype*/
+	uint16_t ethertype = 0x1234; 
+
+	rv = SES_RxStackProcessorFramesByEtype(ethertype, sesL2RxCallback_Example); 
+	printf("SES_RxStackProcessorFramesByEtype rv :: %d\n", rv);
+
+	while (1) {
+		Sleep(30);
+	}
+	return rv;
+}
+
+void seslayer2_Example() {
 
 	switch (LAYER_2) {
 
 	case 1:
 		printf("Layer2 Transmit Example \n");
-		ses_l2_transmit_example();
+		sesL2Transmit_Example();
 		break;
 
 	case 2:
 		printf("Layer2 packet received by Stack Processor with matching MAC Example\n");
-		ses_l2_receive_example_MAC();
+		sesRxStackProcessorFramesByMac_Example(); 
 		
 		break;
 
 	case 3: 
 		printf("Layer2 packet received by Stack Processor with matching Ethertype Example\n");
-		ses_l2_receive_example_ethertype_stackProcessor(); 
+		sesRxStackProcessorFramesByEtype_Example(); 
 		break;
-
+		
 
 	case 4:
 		printf("Layer2 packet received with matching Ethertype Example\n");
-		ses_l2_receive_example_MAC_stackProcessor();
+		sesRxSesFramesByEtypeOnly_Example(); 
 		break;
 	
 	case 5:
 		printf("Layer2 packet received with matching MAC Example\n");
-		ses_l2_receive_example_ethertype();
+		sesRxSesFramesByMac_Example();
 		break;
 
 	default:

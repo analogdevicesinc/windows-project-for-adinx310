@@ -1,12 +1,12 @@
-/* 
- * Copyright 2024 Analog Devices, Inc.
- * 
+/*
+ * Copyright 2025 Analog Devices, Inc.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,14 +17,14 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h> 
 #include "SES_example_vlan.h"
 #include "SES_configuration.h"
 #include "SES_vlan.h"
 #include "SES_frer.h"
 
 /*  Set Port 3 and port 4 in Learn and Forward Mode for given VLAN */
-int32_t SES_test_SetVlanMode() {
+int32_t sesSetVlanMode_Example(void) {
 	int32_t rv = 0;
 	uint16_t VID = 10;
 	/**
@@ -42,8 +42,8 @@ int32_t SES_test_SetVlanMode() {
 	return rv;
 }
 
-
-int32_t SES_test_SetVlanPortMode() {
+/* Set VLAN operating mode for vid 20 as Learn and Forward for Port 5*/
+int32_t sesSetVlanPortMode_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort5;
 	uint16_t VID = 20;
@@ -52,8 +52,8 @@ int32_t SES_test_SetVlanPortMode() {
 	return rv;
 }
 
-
-int32_t test_SES_SetVlanPortModeAll(void) {
+/* Set VLAN operating mode for specific port for all configured VLANs */
+int32_t sesSetVlanPortModeAll_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort4;
 	SES_vlanMode_t mode = SES_vlanLearn_Forward;
@@ -61,22 +61,27 @@ int32_t test_SES_SetVlanPortModeAll(void) {
 	return rv;
 }
 
-void SES_test_access_trunk_mode() {
+/* Trunk/Access example with following port configurations: 
+		- Port 0 → Host Port
+		- Port 1 → Access port, VLAN ID 2, PCP 2
+		- Port 2 → Access port, VLAN ID 3, PCP 2
+		- Port 3 → Access port, VLAN ID 4, PCP 2
+		- Port 4 → Access port, VLAN ID 5, PCP 2
+		- Port 5 → Trunk port, VLN ID range 1-5, PCP 2
+*/
+void sesAccessTrunkMode_Example(void) {
 
-	/* port 0: access port, VLAN ID 2, PCP 2 */
-	printf("Port0 as accees Port :: %d\n", SES_SetVlanPortType(SES_macPort0, (uint16_t)2, (uint16_t)2, (uint8_t)2, SES_vlanAccess));
- 
 	/* port 1: access port, VLAN ID 2, PCP 2 */
-	printf("Port1 as accees Port :: %d\n", SES_SetVlanPortType(SES_macPort1, (uint16_t)2, (uint16_t)2, (uint8_t)2, SES_vlanAccess));
+	printf("Port 1 as access Port :: %d\n", SES_SetVlanPortType(SES_macPort1, (uint16_t)2, (uint16_t)2, (uint8_t)2, SES_vlanAccess));
 	
 	/* port 2: access port, VLAN ID 3, PCP 2 */
-	printf("Port2 as accees Port :: %d\n", SES_SetVlanPortType(SES_macPort2, (uint16_t)3, (uint16_t)3, (uint8_t)2, SES_vlanAccess));
+	printf("Port 2 as access Port :: %d\n", SES_SetVlanPortType(SES_macPort2, (uint16_t)3, (uint16_t)3, (uint8_t)2, SES_vlanAccess));
 	
 	/* port 3: access port, VLAN ID 4, PCP 2 */
-	printf("Port3 as accees Port :: %d\n", SES_SetVlanPortType(SES_macPort3, (uint16_t)4, (uint16_t)4, (uint8_t)2, SES_vlanAccess));
+	printf("Port 3 as access Port :: %d\n", SES_SetVlanPortType(SES_macPort3, (uint16_t)4, (uint16_t)4, (uint8_t)2, SES_vlanAccess));
 	
 	/* port 4: access port, VLAN ID 5, PCP 2 */
-	printf("Port4 as accees Port :: %d\n", SES_SetVlanPortType(SES_macPort4, (uint16_t)5, (uint16_t)5, (uint8_t)2, SES_vlanAccess));
+	printf("Port 4 as access Port :: %d\n", SES_SetVlanPortType(SES_macPort4, (uint16_t)5, (uint16_t)5, (uint8_t)2, SES_vlanAccess));
 
 	/* port 5: Trunk port, VLN ID range 1-5, PCP 2 */
 	printf("SES_SetVlanPortType 5 :: %d\n", SES_SetVlanPortType(SES_macPort5, (uint16_t) 1, (uint16_t) 5, (uint8_t) 2, SES_vlanTrunk));
@@ -84,7 +89,7 @@ void SES_test_access_trunk_mode() {
 }
 
 
-void SES_insert_Vlan_Tag_Example() {
+void sesInsertVlanTag_Example(void) {
 
 	int32_t rv = SES_OK;
 	SES_mac_t mac = SES_macPort4;
@@ -147,13 +152,13 @@ void SES_insert_Vlan_Tag_Example() {
 		sequenceMgmt, rxSequenceSet, transmitFilter, receiveFilter, &index_p);
 }
 
-void vlanExample(void) {
+void sesVlan_Example(void) {
 
 	if (TRUNK_ACCESS) {
-		SES_test_access_trunk_mode();
+		sesAccessTrunkMode_Example();
 	}
 	else {
-		SES_test_SetVlanMode();
+		sesSetVlanMode_Example();
 	}
 
 }

@@ -1,5 +1,5 @@
 /* 
- * Copyright 2024 Analog Devices, Inc.
+ * Copyright 2025 Analog Devices, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+
 #include <stdio.h>
 #include <Windows.h>
 #include "SES_PORT_interface.h"
@@ -22,10 +24,8 @@
 #include "SES_codes.h"
 
 
-
 /*SES Configuration code*/
-
-int32_t ses_config(void) {
+int32_t sesConfig(void) {
 
 	int32_t rv;
 	uint8_t sesPrimaryMac[6] = SES_PRIMARY_MAC;
@@ -97,6 +97,7 @@ int32_t ses_config(void) {
 }
 			}
 		}
+		
 	
 #else 
 	/*
@@ -137,7 +138,7 @@ int32_t ses_config(void) {
 /*SES Configuration code*/
 
 
-void ses_getAppInfo() {
+void sesGetAppInfo_Example() {
 
 	SES_appInfo_t appInfo;
 	printf("---------------------FIRMWARE DETAILS----------------------\n");
@@ -151,57 +152,59 @@ void ses_getAppInfo() {
 
 }
 
-void SES_configuration(void) {
+void sesProtocolInitialization_Example(void) {
+
+	int input;
 
 	if (DEFAULT_SWITCH) {
 		printf("Initializing the switch with default configurations !!\n");
-		SES_test_LLDP_Init();
-		SES_Test_Single_PtpInstance();
-		ses_mstp_stack_start();
+		sesLldpInit_Example();
+		sesSingleASPtpInstance_Example();
+		sesMstpStackStart_Example();
 
 	}
 
 	/*HSR/PRP Initialization*/
 	else if (HSR_PRP) {
-		ses_hsr_prp_main();
+		sesHsrPrp_Example();
 	}
 
 	else {
 
 		/*Time Syncronization Example*/
 		if (TIME_SYNC) {
-			timeSynchMain();
+			sesTimeSync_Example();
 
 		}
 		/*Schedule Traffic Example*/
 		if (SCHEDULED_TRAFFIC) {
-			ses_test_scheduled_traffic_guard_band_example();
+			sesScheduledTrafficGuardBand_Example();
 		}
 		/*Frame Preemption Example*/
 		if (FRAME_PREEMPTION) {
-			test_SES_PREEMPT_SetPreemptionConfig();
+			sesSetPreemptionConfigurationStructure_Example();
 		}
 		/*Send List Example*/
 		if (SENDLIST) {
-			ses_example_sendlist();
+			sesSendlist_Example();
 		}
 		/*FRER Example*/
 		if (FRER) {
-			SES_frerMain();
+			sesFrer_Example();
 		}
 		/*PSFP Example*/
 		if (PSFP) {
-			SES_example_psfp_main();
+			sesPsfp_Example();
 		}
 
 		/*MRP Example*/
 		if (MRP) {
-			MRPExample_main();
+			sesMrp_Example();
 		}
 
 		/*MSTP Example*/
 		if (MSTP) {
-			ses_multiple_msti_example();
+			sesMultipleMsti_Example();
 		}
 
 	}
@@ -210,37 +213,66 @@ void SES_configuration(void) {
 
 	/*Event Example*/
 	if (EVENT) {
-		eventExampleMain();
+		sesEvent_Example();
 	}
 
 	/*LLDP Configuration*/
 	if (LLDP_INIT) {
-		SES_test_LLDP_Init();
+		sesLldpInit_Example();
 	}
 
 	/*Firmware Update Example*/
 	if (FIRMWARE_UPDATE) {
-		firmwareUpdateExample();
+		sesFirmwareUpdate_Example();
 		Sleep(5000);
 	}
 
 	/*IGMP Configuration Example*/
 	if (IGMP_SNOOPING) {
-		igmp_main();
+		sesIgmp_Example();
 	}
 
 	/*VLAN configuration Example*/
 	if (VLAN_CONFIG) {
-		vlanExample();
+		sesVlan_Example();
 	}
 
-	///*Switch Example*/
+	/*Switch Example*/
 	if (SWITCH_EXAMPLE) {
-		SES_SwitchExampleMain();
+		sesSwitch_Example();
 	}
 
 	/*Layer 2 Rx/TX Example*/
 	if (LAYER_2) {
-		ses_layer2_main();
+		seslayer2_Example();
 	}
+
+	if (UPDATE_SOURCE_MAC) {
+		sesUpdateMACAddress_Example();
+	}
+
+	if (TIME_SYNC) {
+		
+		while (1) {
+			printf("\n");
+			printf("*----------------Time Synch Read prameters  ------------- :: \n");
+			
+			printf("1: Read Port Specific Parameters \n");
+			printf("2: Read CMLDS Specific Parameters  \n");
+			printf("9: Exit\n");
+			scanf("%d", &input);
+
+			printf("Option Entered ::%d\n", input);
+			
+			if (input == 9) {
+				break;
+			}
+			else {
+				sesGetPtpParameters_Example(input);
+			}
+
+		}
+
+	}
+		
 }

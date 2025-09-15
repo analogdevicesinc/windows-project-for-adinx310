@@ -29,18 +29,18 @@ int main(int argc, char* argv[])
 	printf("\n--START SES--\n\n");
 
 	/*Modify CONFIG_OVER_SPI if using SPI*/
-	if (SES_OK == ses_config()) {
-		ses_getAppInfo();
-		printf("############ Configuring the Switch #####################\n");
-		SES_configuration();
+	if (SES_OK == sesConfig()) {
+		sesGetAppInfo_Example();
+		printf("############ Configuring the Switch ###################\n");
+		sesProtocolInitialization_Example();
 	}
 	else {          
 		printf("SES initilization failed !!!!\n");
 	}
 
-
  	printf("\n--END--\n"); 
 
+	
     return(0);
 }
 

@@ -1,18 +1,19 @@
-/* 
- * Copyright 2024 Analog Devices, Inc.
- * 
+/*
+ * Copyright 2025 Analog Devices, Inc.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 #include <string.h>
 #include <stdbool.h>
@@ -24,7 +25,7 @@
 #include "SES_debug.h"
 
 
-void SES_test_StartMRP() {
+void sesStartMrp() {
 
 	/* Initialize MRP with below befault configuration
 		Ring Role * *: Client
@@ -42,9 +43,9 @@ void SES_test_StartMRP() {
 
 
 
-void SES_test_GetInstanceConfig() {
+void sesGetInstanceConfig_Example() {
 
-	// Get the operational MRP instance configuration
+	/*Get the operational MRP instance configuration*/
 	SES_mrpInstanceInfo_t config_p;
 	if (SES_OK == SES_MrpGetInstanceConfig(&config_p)) {
 		printf("MRP Ring Role :: %d\n", config_p.ringRole);
@@ -71,17 +72,17 @@ void SES_test_GetInstanceConfig() {
 
 
 
-//MRP configurationa nd Initilization 
-/*Below Example first configure the MRP parameters and then initialize MPR protocol
+/*MRP configurationa nd Initilization 
+Below Example first configure the MRP parameters and then initialize MPR protocol
 */
 
-void SES_MRPConfigAndInit() {
+void sesMRPConfigAndInit_Example() {
 
-	//Ring Ports
+	/*Ring Ports*/
 	SES_mac_t rPort1Mac = SES_macPort2;
 	SES_mac_t rPort2Mac = SES_macPort3;
 
-	//Ring Port Status
+	/*Ring Port Status*/
 	SES_mrpPortInfo_t port1;
 	SES_mrpPortInfo_t port2;
 
@@ -99,7 +100,7 @@ void SES_MRPConfigAndInit() {
 
 	};
 
-	// Configure Ring ports and initialize MRP
+	/*Configure Ring ports and initialize MRP*/
 	if (SES_OK == SES_MrpSetRingPorts(rPort1Mac, rPort2Mac)) {
 		SES_MrpGetRingPortInfo(&port1, &port2);
 		printf("Ring Port1 :: %d, Port 2 :: %d\n", port1.mac, port2.mac);
@@ -112,9 +113,9 @@ void SES_MRPConfigAndInit() {
 
 
 
-void SES_test_SetRingPorts() {
+void sesSetRingPorts_Example() {
 
-	//Set the domain ring ports
+	/* Set the domain ring ports */
 	SES_mac_t rPort1Mac = SES_macPort2;
 	SES_mac_t rPort2Mac = SES_macPort3;
 	SES_mrpPortInfo_t port1;
@@ -125,7 +126,7 @@ void SES_test_SetRingPorts() {
 	printf("Ring Port1 :: %d, Port 2 :: %d", port1.mac, port2.mac);
 }
 
-void SES_test_GetDomainStatistics() {
+void sesGetDomainStatistics_Example() {
 
 	SES_mrpStatistics_t stats_p;
 
@@ -138,7 +139,7 @@ void SES_test_GetDomainStatistics() {
 	}
 }
 
-int32_t SES_test_VerifyMrpEnabled() {
+int32_t sesVerifyMrpEnabled_Example() {
 	bool enabled_p;
 	int32_t result = SES_MrpVerifyEnabled(&enabled_p);
 	printf("SES_VerifyMrpEnabled :: %i\n", enabled_p);
@@ -146,8 +147,9 @@ int32_t SES_test_VerifyMrpEnabled() {
 	return result;
 
 }
-void SES_test_SetMrpClient() {
-	//Update the Role and reactOnLinkCahge parameter
+
+void sesSetMrpClient_Example() {
+	/* Update the Role and reactOnLinkCahge parameter */
 	SES_mrpInstanceInfo_t config_p;
 	if (SES_OK == SES_MrpGetInstanceConfig(&config_p)) {
 		config_p.ringRole = SES_ringRoleManager;
@@ -156,7 +158,7 @@ void SES_test_SetMrpClient() {
 	}
 }
 
-int32_t SES_test_SetMrpManager() {
+int32_t sesSetMrpManager_Example() {
 
 	int32_t result = 0;
 	SES_mrpInstanceInfo_t config_p;
@@ -175,12 +177,14 @@ int32_t SES_test_SetMrpManager() {
 	return result;
 }
 
-//MRP configuration and Initialization, configure device as MRM, then start/initialize MRP protocol
+/*MRP configuration and Initialization, configure device as MRM, then start/initialize MRP protocol*/
 void SES_MRPConfigMRM() {
-	// Port 1 and 2 will be configured as Ring ports
+
+	/* Port 1 and 2 will be configured as Ring ports */
 	SES_mac_t rPort1Mac = SES_macPort1;
 	SES_mac_t rPort2Mac = SES_macPort2;
-	//Ring Port Status
+
+	/* Ring Port Status */
 	SES_mrpPortInfo_t port1;
 	SES_mrpPortInfo_t port2;
 	SES_mrpInstanceInfo_t config_p = {
@@ -195,7 +199,7 @@ void SES_MRPConfigMRM() {
 	.recoveryRate = SES_recoveryRate500
 	};
 
-	// Configure Ring ports and initialize MRP
+	/*Configure Ring ports and initialize MRP*/
 	if (SES_OK == SES_MrpSetRingPorts(rPort1Mac, rPort2Mac)) {
 		SES_MrpGetRingPortInfo(&port1, &port2);
 		printf("Ring Port1 :: %d, Port 2 :: %d\n", port1.mac, port2.mac);
@@ -206,12 +210,12 @@ void SES_MRPConfigMRM() {
 }
 
 
-void MRPExample_main() {
+void sesMrp_Example() {
 
 	printf("---------------------------------------------------------------------\n");
 	printf("Initializing MRP with :: \nRing Role * *: Client\nRecovery Rate * *: 500 ms\nRing Ports * *: Port 1 & 2\nVLAN * *: No Vlan(0x0FFF)\n");
 	printf("Priority * *: Default Manager / AutoManager\npriorities React On Link Change * *: Disabled\n");
 	printf("---------------------------------------------------------------------\n");
-	SES_test_StartMRP();
+	sesStartMrp();
 
 }

@@ -1,5 +1,5 @@
 
 # Overview:
 ___
-You need to install the adin6310/3310 drivers as described in README section 3.0 and saved in the drivers folder of the project.
+User needs to install the ADIN6310/ADIN3310 drivers as described in Section 3.0 of the README, and copy all driver contents into the project's drivers folder as in section 3.1.
 **External Libraries (Third-party libraries)**  

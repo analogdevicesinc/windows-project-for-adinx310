@@ -536,9 +536,6 @@
     <ClInclude Include="example\inc\SES_example_mrp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="example\inc\SES_example_portConfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="example\inc\SES_example_preemption.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -1,18 +1,19 @@
-﻿/* 
- * Copyright 2024 Analog Devices, Inc.
- * 
+﻿/*
+ * Copyright 2025 Analog Devices, Inc.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 
 #include <string.h>
 #include <stdbool.h>
@@ -24,12 +25,13 @@
 #include "SES_codes.h"
 #include "SES_debug.h"
 #include "SES_configuration.h"
+#include "SES_frer.h"
 
 /* Example of getting the default Miss return for unicast on Port 0 */
-int32_t test_SES_GetUnicastMissReturn(void) {
+int32_t sesGetUnicastMissReturn_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort0;
-	uint8_t portMap;
+	uint16_t portMap;
 	bool cutThrough;
 	uint8_t lookupDone;
 	uint8_t txFilter;
@@ -45,11 +47,11 @@ int32_t test_SES_GetUnicastMissReturn(void) {
 * Port 1 and for switching behaviour to be Store& Forward
 */
 
-int32_t test_SES_SetUnicastMissReturn(void) {
+int32_t sesSetUnicastMissReturn_Example(void) {
 	int32_t rv = 0;
 	SES_mac_t mac = SES_macPort0;
 	/* Forward only to Port 1 */
-	uint8_t portMap = 0x2;
+	uint16_t portMap = 0x2;
 
 	/* Enable Store & Forward mode */
 	bool cutThrough = false;
@@ -65,19 +67,19 @@ int32_t test_SES_SetUnicastMissReturn(void) {
 }
 
 /*Example of configuring Store and Forward operation on Port 0 on all queues */
-int32_t ses_storeForwardExample() {
+int32_t sesStoreForward_Example(void) {
 	
 	int32_t rv = SES_OK;
 	SES_mac_t port = SES_macPort0;
 
 	/* set store and forward mode on allqueues */
-	SES_queueFrameSwitching_t storeandforward_p = { 0,0,0,0,0,0,0,0 }; 
-	rv = SES_SetStoreAndForwardMask(port, &storeandforward_p);
+	SES_queueFrameSwitching_t storeandforward = { 0,0,0,0,0,0,0,0 }; 
+	rv = SES_SetStoreAndForwardMask(port, &storeandforward);
 
 	return rv;
 }
 
-int32_t ses_addSimpleStaticEntry() {
+int32_t sesAddSimpleStaticEntry_Example(void) {
 
 	/* Simple example of adding a static entry */
 	int32_t rv = SES_OK; 
@@ -87,12 +89,12 @@ int32_t ses_addSimpleStaticEntry() {
 	int16_t vlanId = 0xF; 
 
 	/* Egress on Port 4 */ 
-	uint8_t portMap = 0x10; 
+	uint16_t portMap = 0x10; 
 	rv = SES_AddStaticTableEntry(&macAddr, vlanId, portMap);
 	return rv;
 }
 
-void SES_ExampleAddStaticTableEntryEx(void) {
+void sesAddStaticTableEntryEx_Example(void) {
 
 	int32_t rv;
 	uint8_t lookupPriority = 0; 
@@ -122,19 +124,19 @@ void SES_ExampleAddStaticTableEntryEx(void) {
 	/* transmit transform to insert/remove VLAN tag for Access port */
 	int transmitFilter = SES_IGNORE_FIELD;  
 	int receiveFilter = SES_IGNORE_FIELD;
-	int entryIndex;
+	int index;
 
 
 	rv = SES_AddStaticTableEntryEx(lookupPriority, macAddr, macMask, vlanId, vlanMask, sourceEntry, override,
 		sourceOverride, hsrOrPrpSupervisory, lookupType, portMapPers, sendToAE, danp, cutThrough,
-		syntTimestamp, localTimestamp, sequenceMgmt, rxSequenceSet, transmitFilter, receiveFilter, &entryIndex);
+		syntTimestamp, localTimestamp, sequenceMgmt, rxSequenceSet, transmitFilter, receiveFilter, &index);
 
-	printf("Add Static Entry:: %d :: %d\n", rv, entryIndex);
+	printf("Add Static Entry:: %d :: %d\n", rv, index);
 
 }
 
 /* Example of reading a static entry back from the device at index location 120 */
-void ses_readStaticEntry() {
+void sesReadStaticEntry_Example(void) {
 
 	int32_t rv = SES_OK;
 	uint8_t macAddr[6];
@@ -180,7 +182,7 @@ example demonstrates how to read the full dynamic table in blocks of 50
 entries.During dynamic table read operation, learning is disabled until 
 the read operation is completed.New entries will not be learned during this time.
 */
-void Ses_ExampleReadDynamicTable(void) {
+void sesReadDynamicTable_Example(void) {
 
 	/*Read 50 entries*/
 	int count = 0;
@@ -235,7 +237,7 @@ void Ses_ExampleReadDynamicTable(void) {
 }
 
 /*Retrieve Port Statistics*/
-void SES_ExampleGetStatistics(void) {
+void sesGetStatistics_Example(void) {
 
 	SES_mac_t mac = SES_macPort0;
 	SES_statistic_t stat_p;
@@ -254,27 +256,22 @@ void SES_ExampleGetStatistics(void) {
 }
 
 
-void SES_SwitchExampleMain(void) {
-
-
-	
+void sesSwitch_Example(void) {
 
 	switch (SWITCH_EXAMPLE) {
-
-
 	case 1:
 		printf("Reading Dynamic Table!!\n");
-		Ses_ExampleReadDynamicTable();
+		sesReadDynamicTable_Example();
 		break;
 
 	case 2:
 		printf("Reading Port 0 Statistics\n");
-		SES_ExampleGetStatistics();
+		sesGetStatistics_Example();
 		break;
 
 
 	default:
-		printf("Error!!!");
+		printf("Wrong configuration !!!");
 		break;
 
 	}
@@ -282,7 +279,7 @@ void SES_SwitchExampleMain(void) {
 
 //==================================Extended Table=================================
 
-int32_t ses_extended_table_static_route_simple_example(void){
+int32_t sesExtendedTableStaticRouteSimple_Example(void){
 	int32_t rv = SES_ERROR;
 	
 	/* Example of adding an extended table entry, note that to perform extended table lookup, user must also either 
@@ -292,6 +289,7 @@ int32_t ses_extended_table_static_route_simple_example(void){
 	/* Egress on Port 4 */
 	uint8_t portMap = 0x10; 
 	uint8_t cutThrough = 0;
+	int override = 0;
 	/* Ethertype to match in frame */
 	uint16_t ethertype = 0xA000;
 
@@ -311,13 +309,14 @@ int32_t ses_extended_table_static_route_simple_example(void){
 	int seqRecovery = SES_IGNORE_FIELD; 
 	int sequenceRecoveryMode = 0;
 	int routeNum;
+
 	rv = SES_AddExtendedStaticRoute_Simple(ethertype, &data, &mask, txFilter, rxFilter, portMap, saveSyntonized, 
-	saveFreerunning, cutThrough, srcOverride, supervisory, seqRecovery, sequenceRecoveryMode, &routeNum);
+	saveFreerunning, cutThrough, override, srcOverride, supervisory, seqRecovery, sequenceRecoveryMode, &routeNum); 
 
 	return rv;
 }
 
-int32_t ses_update_extended_table_example(void){
+int32_t sesUpdateExtendedTable_Example(void){
 	int32_t rv = SES_ERROR;
 	
 	/* Example of updating the port map of an existing extended table entry */
@@ -335,6 +334,7 @@ int32_t ses_update_extended_table_example(void){
 	int saveSyntonized = 0;
 	int saveFreerunning = 0;
 	int cutThrough = 1;
+	int override = 0;
 	/* Use Extended table portmap return information */
 	int srcOverride = 1; 
 	int supervisory = 0;
@@ -344,7 +344,7 @@ int32_t ses_update_extended_table_example(void){
 	int routeNum;
 	rv = SES_AddExtendedStaticRoute_Simple(ethertype, &data, &mask,
 											txFilter, rxFilter, portMap,
-											saveSyntonized, saveFreerunning, cutThrough,
+											saveSyntonized, saveFreerunning, cutThrough, override,
 											srcOverride, supervisory, seqRecovery,
 											sequenceRecoveryMode, &routeNum);
 	
@@ -355,7 +355,7 @@ int32_t ses_update_extended_table_example(void){
 	return rv;
 }
 
-int32_t ses_extended_table_static_route_ipv4_example(void){
+int32_t sesExtendedTableStaticRouteIpv4_Example(void){
 	int32_t rv = SES_ERROR;
 	
 	/* Example of adding an IPv4 extended table entry using SES_AddExtendedStaticRoute_IPv4TcpUdp helper function */
@@ -390,6 +390,7 @@ int32_t ses_extended_table_static_route_ipv4_example(void){
 												0, // no syntonized timestamp
 												0, // no local timestamp
 												0, // Store & Forward entry
+												0, // Override
 												1, // Source override, Use Extended table portmap return information
 												0, // not a supervisory frame
 												SES_IGNORE_FIELD, // no sequence recovery
@@ -400,11 +401,12 @@ int32_t ses_extended_table_static_route_ipv4_example(void){
 	return rv;
 }
 
-int32_t ses_install_extended_lookup_entry_ipv4_example(void){
+int32_t sesInstallExtendedLookupEntryIpv4_Example(void){
 	int32_t rv = SES_ERROR;
 	
 	/* Example of adding an IPv4 extended table entry using SES_InstallExtLookupEntry*/
 	uint16_t ethertype = 0x0800;
+	int override = 0;
 
 	/* 
 	 * DCSP 
@@ -453,6 +455,7 @@ int32_t ses_install_extended_lookup_entry_ipv4_example(void){
 									0, // saveSyntonized
 									0, // saveFreerunning
 									0, // cutThrough
+									0,// override
 									1, // srcOverride
 									0, // supervisory
 									SES_IGNORE_FIELD, // seqRecovery
@@ -463,7 +466,7 @@ int32_t ses_install_extended_lookup_entry_ipv4_example(void){
 	return rv;
 }
 
-int32_t ses_extended_table_static_route_ipv6_example(void){
+int32_t sesExtendedTableStaticRouteIpv6_Example(void){
 	int32_t rv = SES_ERROR;
 	
 	/* Example of adding an IPv6 extended table entry using SES_AddExtendedStaticRoute_IPv6TcpUdp helper function */
@@ -496,6 +499,7 @@ int32_t ses_extended_table_static_route_ipv6_example(void){
 												0,// no syntonized timestamp
 												0,// no local timestamp
 												0,// Store & Forward entry
+												0, // Override
 												1, // Source override, set to 1 to use Extended table portmap return information
 												0,// not a supervisory frame
 												SES_IGNORE_FIELD,// no sequence recovery
@@ -506,7 +510,7 @@ int32_t ses_extended_table_static_route_ipv6_example(void){
 	return rv;
 }
 
-int32_t ses_install_extended_lookup_entry_ipv6_example(void){
+int32_t sesInstallExtendedLookupEntryIpv6_Example(void){
 	int32_t rv = SES_ERROR;
 	
 	/* Example of adding an IPv6 extended table entry using SES_InstallExtLookupEntry() API*/
@@ -595,6 +599,7 @@ int32_t ses_install_extended_lookup_entry_ipv6_example(void){
 									0, // saveSyntonized
 									0, // saveFreerunning
 									0, // cutThrough
+									0, // Override
 									1, // srcOverride, set to 1 to use Extended table portmap return information
 									0, // supervisory
 									SES_IGNORE_FIELD, // seqRecovery
@@ -606,11 +611,6 @@ int32_t ses_install_extended_lookup_entry_ipv6_example(void){
 }
 
 //==================================Reprioritize Based on Ethertype=================================
-
-int32_t AddStreamFilterEntryEx(SES_mac_t mac, uint8_t ipv, uint8_t rxStreamGateIndex, uint8_t rxFilterIndex);
-int32_t AddExtendedTableEntry_1(uint8_t portMap, uint8_t rxFilterIndex, uint16_t ethertype, uint8_t cutThrough, int32_t* routeNum_p);
-int32_t AddExtendedTableEntry_2(uint8_t portMap, uint8_t rxFilterIndex, uint16_t ethertype, uint8_t cutThrough, int32_t* routeNum_p);
-int32_t AddScheduleTraffic(void);
 
 /**
 * 	@brief Helper function to set port stream filter and stream gate
@@ -626,7 +626,7 @@ int32_t AddScheduleTraffic(void);
 *   	- #SES_OK      operation succeeded
 *   	- #SES_ERROR   unable to set stream filter
 */
-int32_t AddStreamFilterEntry(SES_mac_t mac,
+int32_t sesAddStreamFilterEntry_Example(SES_mac_t mac,
 	uint8_t ipv,
 	uint8_t rxStreamGateIndex,
 	uint8_t rxFilterIndex) 
@@ -688,7 +688,7 @@ int32_t AddStreamFilterEntry(SES_mac_t mac,
 *   	- #SES_OK      operation succeeded
 *   	- #SES_ERROR   unable to set gate parameters
 */
-int32_t AddExtendedTableEntry(uint8_t portMap,
+int32_t sesAddExtendedTableEntry_Example(uint8_t portMap,
 	uint8_t rxFilterIndex,
 	uint16_t ethertype,
 	uint8_t cutThrough,
@@ -710,6 +710,7 @@ int32_t AddExtendedTableEntry(uint8_t portMap,
 											0, //saveSyntonized
 											0, //saveFreerunning
 											0, //cutThrough
+											0, // Override
 											1, //srcOverride, set to 1 to use Extended table portmap return information
 											0, //supervisory
 											SES_IGNORE_FIELD, //seqRecovery
@@ -718,7 +719,7 @@ int32_t AddExtendedTableEntry(uint8_t portMap,
 	return rv;
 } 
 
-int32_t ses_ethertype_reprioritization_rxlookup_example(void) {
+int32_t sesEthertypeReprioritizationRxlookup_Example(void) {
 	int32_t rv = SES_PORT_ERROR;
 
     SES_mac_t mac = SES_macPort0;//port to apply rx filter at (ingress port)
@@ -731,9 +732,9 @@ int32_t ses_ethertype_reprioritization_rxlookup_example(void) {
 	uint8_t rxStreamGateIndex = SES_PSFP_GetStreamGateIndex(0x01); //Get available stream gate ID for Port0
 	uint32_t regValue = 0;
 	/* Call helper function to set a stream filter */
-	rv = AddStreamFilterEntry(mac, ipv, rxStreamGateIndex, rxFilterIndex);
+	rv = sesAddStreamFilterEntry_Example(mac, ipv, rxStreamGateIndex, rxFilterIndex);
 	/* Call helper function to add an entry in the extended lookup table */
-	rv |= AddExtendedTableEntry(portMap, rxFilterIndex, ethertype, cutThrough, &routeNum);
+	rv |= sesAddExtendedTableEntry_Example(portMap, rxFilterIndex, ethertype, cutThrough, &routeNum);
 	/* Call the ADINx310 driver API for enabling the extended lookup for all frames on the chosen Rx port*/
 	rv |= SES_GetRxPortLookupMode(mac, &regValue);
 	if (rv == 0) {
@@ -745,7 +746,7 @@ int32_t ses_ethertype_reprioritization_rxlookup_example(void) {
 	return rv;
 }
 
-int32_t ses_ethertype_reprioritization_static_table_example(void) {
+int32_t sesEthertypeReprioritizationStaticTable_Example(void) {
 	int32_t rv = SES_PORT_ERROR;
 
     SES_mac_t mac = SES_macPort0;//port to apply rx filter at (ingress port)
@@ -762,10 +763,10 @@ int32_t ses_ethertype_reprioritization_static_table_example(void) {
  	uint8_t macMask[6] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
 	/* Call helper function to set a stream filter */
-	rv = AddStreamFilterEntry(mac, ipv, rxStreamGateIndex, rxFilterIndex);
+	rv = sesAddStreamFilterEntry_Example(mac, ipv, rxStreamGateIndex, rxFilterIndex);
 
 	/* Call helper function to add an entry in the extended lookup table */
-	rv |= AddExtendedTableEntry(portMap, rxFilterIndex, ethertype, cutThrough, &routeNum);
+	rv |= sesAddExtendedTableEntry_Example(portMap, rxFilterIndex, ethertype, cutThrough, &routeNum);
 
 	/* Call the ADINx310 driver API for adding a static table entry */
 	rv |= SES_AddStaticTableEntryEx(1, // lookup priority
@@ -792,4 +793,103 @@ int32_t ses_ethertype_reprioritization_static_table_example(void) {
 
 	printf("ses_ethertype_reprioritization_static_table_example :: %d\n", rv);
 	return rv;
+}
+
+
+void sesUpdateMACAddress_Example(void)
+{
+	//Destination MAC address to look for to update source MAC
+	uint8_t destinationAddr[6] = { 0xF8,0xE4,0x3B,0x10,0x49,0xC9 };
+	uint8_t Addr_mask[6] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
+	
+	//New address to replace exstine source address 
+	uint64_t tempAddr[6] = { 0xaa,0xaa,0xaa,0xaa,0xaa,0xaa }; 
+	uint64_t destAddr = 0;
+	int32_t rv = 0;
+
+	//Retrieve TxTranform index for Port 1 and Port 2 
+	int32_t txAddrXformIndex = SES_GetTxTransformIndex(0x06);
+
+	printf("Transform Index %d\n", txAddrXformIndex);
+
+	//Convert 8bit to 64bit
+	for (int i = 0; i < 6; i++) {
+		destAddr |= ((uint64_t)tempAddr[i] << (8 * (5 - i)));
+	}
+	//Insatll new TxTransform for Port 1
+	//To update destination MAC, srcAddrReplace must be set to 0
+	rv = SES_TxPortSetTxXformEntry(
+		SES_macPort1,            // int port
+		txAddrXformIndex,       // int entry
+		0,                      // int timeSize
+		0,                      // int timeOffset
+		0,                      // int timeSourceFree
+		0,                      // int peerDelaySelect
+		SES_noTimeOperation,    // SES_DRV_txPortTimeOperation_t timeOperation
+		0,                      // int srfIndex
+		0,                      // int srfEnable
+		SES_noTagOperation,     // SES_DRV_txPortTagOperation_t tagOperation
+		destAddr,            // uint64_t destAddress
+		1,                      // int destAddrSwapEn
+		0,                      // int vlanPCP
+		0,                      // int vlanDEI
+		0,                      // uint16_t vlanID
+		SES_dynamicTblVlanNoTagOp,  // SES_DRV_txPortVLANOperation_t vlanOperation
+		1,                      // int srcAddrReplace
+		0);                     // portIdReplace
+
+	printf("Tx transform :: %d\n", rv);
+
+
+	//Insatll new TxTransform for Port 1
+	//To update destination MAC, srcAddrReplace must be set to 0
+	rv = SES_TxPortSetTxXformEntry(
+		SES_macPort2,            // int port
+		txAddrXformIndex,       // int entry
+		0,                      // int timeSize
+		0,                      // int timeOffset
+		0,                      // int timeSourceFree
+		0,                      // int peerDelaySelect
+		SES_noTimeOperation,    // SES_DRV_txPortTimeOperation_t timeOperation
+		0,                      // int srfIndex
+		0,                      // int srfEnable
+		SES_noTagOperation,     // SES_DRV_txPortTagOperation_t tagOperation
+		destAddr,            // uint64_t destAddress
+		1,                      // int destAddrSwapEn
+		0,                      // int vlanPCP
+		0,                      // int vlanDEI
+		0,                      // uint16_t vlanID
+		SES_dynamicTblVlanNoTagOp,  // SES_DRV_txPortVLANOperation_t vlanOperation
+		1,                      // int srcAddrReplace
+		0);                     // portIdReplace
+
+	printf("Tx transform :: %d\n", rv);
+
+
+	//New static entry to apply the above TxTransform 
+	rv = SES_AddStaticTableEntryEx(
+		1,                             // lookupPriority
+		destinationAddr,                    // MACaddr_p
+		Addr_mask,                          // MACmask_p
+		SES_DYNTBL_NO_VLAN,            // vlanID
+		0,                             // vlanMask
+		0,                             // sourceEntry
+		0,                             // override
+		0,                             // sourceOverride
+		0,                             // hsrOrPrpSupervisory
+		SES_dynamicTblLookupBasic,       // lookupType
+		0x06,                     // portMap
+		0,                             // sendToAE
+		0,                             // danp
+		0,                             // cutThrough
+		0,                             // syntTimestamp
+		0,                             // localTimestamp
+		dynamicTblNoSequenceOp,    // sequenceMgmt
+		0,                             // rxSequenceSet
+		txAddrXformIndex,              // transmitFilter
+		SES_DYNTBL_NO_ENTRY,           // receiveFilter
+		NULL);                         // index_p
+
+	printf("Static Entry  :: %d\n", rv);
+
 }
