@@ -52,7 +52,7 @@ int32_t sesPrpStart_Example(int32_t portC) {
 #endif
 
     int32_t lreDupListResideMaxTime = 161;
-    rv = SES_PrpStart(redundancyType, danpDevice, &lrePorts_p, &rbInterlinkPorts_p, &lreMacAddress, lreDupListResideMaxTime);
+    rv = SES_PrpStart(redundancyType, danpDevice, &lrePorts_p, &rbInterlinkPorts_p, &lreMacAddress, lreDupListResideMaxTime, MIB_PRP_HSR_fullStatistics);
 
     return rv;
 }
@@ -83,7 +83,7 @@ int32_t sesPrpRedboxStart_Example(int32_t portC) {
 
     int32_t lreDupListResideMaxTime = 161;
 
-    rv = SES_PrpStart(redundancyType, danpDevice, &lrePorts_p, &rbInterlinkPorts_p, &lreMacAddress, lreDupListResideMaxTime);
+    rv = SES_PrpStart(redundancyType, danpDevice, &lrePorts_p, &rbInterlinkPorts_p, &lreMacAddress, lreDupListResideMaxTime, MIB_PRP_HSR_fullStatistics);
 
     return rv;
 }
@@ -113,7 +113,7 @@ int32_t sesPrpRedboxStartVlan_Example(int32_t portC) {
     printf("SES_SetVlanPortType 5 :: %d\n", SES_SetVlanPortType(SES_macPort5, 10, 20, 4, SES_vlanTrunk)); 
 
 
-    rv = SES_PrpStart(redundancyType, danpDevice, &lrePorts_p, &rbInterlinkPorts_p, &lreMacAddress, lreDupListResideMaxTime);
+    rv = SES_PrpStart(redundancyType, danpDevice, &lrePorts_p, &rbInterlinkPorts_p, &lreMacAddress, lreDupListResideMaxTime, MIB_PRP_HSR_fullStatistics);
 
     return rv;
 }
@@ -143,7 +143,7 @@ int32_t sesHsrStart_Example(int32_t portC) {
 
     int32_t lreDupListResideMaxTime = 161;
 
-    rv = SES_HsrStart(redundancyType, lreSwitchingEndNode, &lrePorts_p, &rbInterlinkPorts_p, &lreMacAddress, lreDupListResideMaxTime);
+    rv = SES_HsrStart(redundancyType, lreSwitchingEndNode, &lrePorts_p, &rbInterlinkPorts_p, &lreMacAddress, lreDupListResideMaxTime, MIB_PRP_HSR_fullStatistics);
 
     return rv;
 }
@@ -179,7 +179,7 @@ int32_t sesHsrRedboxStart_Example(int32_t portC) {
 
     int32_t lreDupListResideMaxTime = 161;
 
-    rv = SES_HsrStart(redundancyType, lreSwitchingEndNode, &lrePorts_p, &rbInterlinkPorts_p, &lreMacAddress, lreDupListResideMaxTime);
+    rv = SES_HsrStart(redundancyType, lreSwitchingEndNode, &lrePorts_p, &rbInterlinkPorts_p, &lreMacAddress, lreDupListResideMaxTime, MIB_PRP_HSR_fullStatistics);
 
     return rv;
 }

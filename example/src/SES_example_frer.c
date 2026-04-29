@@ -487,68 +487,7 @@ int32_t sesFrerIndividualRecovery_Example(void) {
 int32_t sesFrerRecoveryStatistics_Example(void) {
 	int32_t rv = 0;
 
-	uint8_t destinationMAC[6] = { 0x00, 0x00, 0x00, 0x11, 0x11, 0x11 };
-
-	TSN_ieee802Dot1cbFrer_t frerParameters;
-	TSN_ieee802Dot1cbStream_t streamParameters;
-	TSN_ieee802Dot1cbMaskAndMatch_t maskAndMatchParameters;
-
-	memset(&frerParameters, 0, sizeof(TSN_ieee802Dot1cbFrer_t));
-	memset(&streamParameters, 0, sizeof(TSN_ieee802Dot1cbStream_t));
-	memset(&maskAndMatchParameters, 0, sizeof(TSN_ieee802Dot1cbMaskAndMatch_t));
-
-	/* Stream table Parameters - Null Stream Identification */
-	streamParameters.TSN_streamIdentity.identificationType = TSN_nullStream;
 	
-	/* Assigning Desination MAC address */
-	for (int i = 0; i < 6; i++) {
-		streamParameters.TSN_streamIdentity.TSN_parameters.TSN_nullStreamIdentification.destinationMac[i] = destinationMAC[i];
-	}
-
-	/* VLAN ID 100 */
-	streamParameters.TSN_streamIdentity.TSN_parameters.TSN_nullStreamIdentification.vlan = 100;
-
-	/* Egress traffic on port 0 */
-	streamParameters.portMap = SES_PORTMAP_PORT_0;
-	streamParameters.TSN_HardwareTableIndices.dynTblIdx[0] = -1;
-	streamParameters.TSN_HardwareTableIndices.dynTblIdx[1] = -1;
-	streamParameters.TSN_HardwareTableIndices.exTblruleId = -1;
-	streamParameters.useStreamtable = false;
-
-	/* Configure frer */
-	frerParameters.TSN_sequenceRecovery.algorithm = TSN_vector;
-	frerParameters.TSN_sequenceRecovery.historyLength = 2;
-	frerParameters.TSN_sequenceRecovery.resetTimeout = 0xffff;
-	frerParameters.TSN_sequenceRecovery.takeNoSequence = false;
-	frerParameters.TSN_sequenceRecovery.individualRecovery = false;
-
-	frerParameters.TSN_HardwareTableIndices.individualRecoveryTblIdx = -1;
-	frerParameters.TSN_HardwareTableIndices.sequenceGenerationTblIdx = -1;
-	frerParameters.TSN_HardwareTableIndices.sequenceRecoveryTblIdx = -1;
-	frerParameters.TSN_HardwareTableIndices.txTransformTblIdx = -1;
-
-	SES_FrerConfigureListenerProxyForStream(&frerParameters, &streamParameters, &maskAndMatchParameters);
-
-	/* Delay for stream to ingress listener */
-	Sleep(10000); 
-
-	/* Configure frer sequence recovery statistics*/
-	TSN_ieee802Dot1cbFrer_t frerParametersRecovery;
-	frerParametersRecovery.TSN_HardwareTableIndices.sequenceRecoveryTblIdx = frerParameters.TSN_HardwareTableIndices.sequenceRecoveryTblIdx;
-	frerParametersRecovery.TSN_sequenceRecovery.port = 0;
-
-	rv = SES_FrerGetSequenceRecoveryStatistics(&frerParametersRecovery);
-	printf("Port :: %d\n", frerParametersRecovery.TSN_sequenceRecovery.port);
-	printf("rxOutOfOrderPkts :: %llu\n", frerParametersRecovery.TSN_perPortPerStreamCounters.rxOutOfOrderPkts);
-	printf("rxRoguePkts :: %llu\n", frerParametersRecovery.TSN_perPortPerStreamCounters.rxRoguePkts);
-	printf("rxPassedPkts :: %llu\n", frerParametersRecovery.TSN_perPortPerStreamCounters.rxPassedPkts);
-	printf("rxDiscardedPkts :: %llu\n", frerParametersRecovery.TSN_perPortPerStreamCounters.rxDiscardedPkts);
-	printf("rxLostPkts :: %llu\n", frerParametersRecovery.TSN_perPortPerStreamCounters.rxLostPkts);
-	printf("rxTaglessPkts :: %llu\n", frerParametersRecovery.TSN_perPortPerStreamCounters.rxTaglessPkts);
-	printf("rxResets :: %llu\n", frerParametersRecovery.TSN_perPortPerStreamCounters.rxResets);
-	printf("encodeErroredPkts :: %llu\n", frerParametersRecovery.TSN_perPortPerStreamCounters.encodeErroredPkts);
-
-	printf("sesFrerRecoveryStatistics_Example :: %d\n\r", rv);
 	return rv;
 }
 

@@ -35,7 +35,8 @@ void sesPtpDeletePtpInstance_Example(uint32_t instanceIndex) {
 }
 
 void sesPtpGetNumberPtpInstances_Example(void) {
-	printf("SES_PtpGetNumberPtpInstances :: %d\n", SES_PtpGetNumberPtpInstances());
+	uint32_t numOfInstances_p;
+	printf("SES_PtpGetNumberPtpInstances :: %d\n", SES_PtpGetNumberPtpInstances(&numOfInstances_p));
 }
 
 void sesPtpSetDefaultDs_Example(void) {

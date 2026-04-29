@@ -350,7 +350,7 @@ int32_t sesUpdateExtendedTable_Example(void){
 	
 	/* new port map for the route */
 	portMap = 0x0010;
-	rv = SES_SetExtendedLookupEntryPortMap(routeNum, portMap);
+	rv = SES_SetExtendedLookupEntryPortMap(routeNum, portMap, false);
 
 	return rv;
 }
